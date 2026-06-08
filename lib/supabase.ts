@@ -25,6 +25,14 @@ export interface PendingOnboarding {
   created_at: string;
 }
 
+export type ConversationFlow = 'awaiting_audit' | 'awaiting_assign' | 'awaiting_topic';
+
+export interface ConversationState {
+  phone_hash: string;
+  current_flow: ConversationFlow;
+  updated_at: string;
+}
+
 export interface MessageLog {
   id?: string;
   faculty_id: string;
