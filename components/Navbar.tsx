@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
@@ -20,9 +21,17 @@ export default function Navbar() {
           Track 3.4 — Wadhwani AI Hackathon 2026
         </span>
 
-        <span className="sm:hidden inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-[#0D9488]/10 text-[#0D9488] border border-[#0D9488]/20">
-          Track 3.4
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="sm:hidden inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-[#0D9488]/10 text-[#0D9488] border border-[#0D9488]/20">
+            Track 3.4
+          </span>
+          <Link
+            href="/admin"
+            className="border border-teal-500 text-teal-400 hover:bg-teal-500 hover:text-white px-3 py-1 rounded text-sm transition-colors"
+          >
+            Admin Dashboard
+          </Link>
+        </div>
       </div>
     </motion.nav>
   );
