@@ -8,23 +8,6 @@ const LANGUAGE_INSTRUCTION =
 const NO_MARKDOWN_INSTRUCTION =
   "IMPORTANT: Do not use any markdown formatting. No asterisks for bold, no hashtags for headers, no dashes for bullets. Use plain text only. Use emojis to structure your response instead of markdown symbols.";
 
-const SEARCH_KEYWORDS_INSTRUCTION =
-  "At the very end of your response, on a new line, output exactly this:\nSEARCH_KEYWORDS: [3-5 relevant search keywords for this topic in Indian education context]\nNothing else after this line.";
-
-function buildGoogleLink(keywords: string): string {
-  const encoded = keywords.trim().replace(/\s+/g, '+');
-  return `https://www.google.com/search?q=${encoded}`;
-}
-
-function attachSearchLink(claudeResponse: string): string {
-  const keywordMatch = claudeResponse.match(/SEARCH_KEYWORDS:\s*(.+)/i);
-  const cleanResponse = claudeResponse.replace(/SEARCH_KEYWORDS:.+/i, '').trim();
-  if (keywordMatch) {
-    const searchUrl = buildGoogleLink(keywordMatch[1]);
-    return `${cleanResponse}\n\n🔍 Learn more: ${searchUrl}`;
-  }
-  return cleanResponse;
-}
 
 function hashPhone(phone: string): string {
   return crypto.createHash('sha256').update(phone).digest('hex');
@@ -123,27 +106,24 @@ async function handleOnboarding(phoneHash: string, body: string): Promise<string
 // ─── Flow runners (call Claude, log, return TwiML) ────────────────────────────
 
 async function runAuditAnalysis(faculty: FacultyProfile, body: string): Promise<string> {
-  const systemPrompt = `You are FacultyMitra, an AI teaching assistant for Indian college faculty. Analyze this syllabus and return a WhatsApp-friendly response (no markdown, use emojis) with: 1) Overall relevance score out of 100, 2) Unit-by-unit verdict using ✅ Keep, ⚠️ Update, or ❌ Remove, 3) Specific replacement suggestions. Keep it concise for mobile reading. End with: Reply ASSIGN to generate a practical assignment. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION} ${SEARCH_KEYWORDS_INSTRUCTION}`;
+  const systemPrompt = `You are FacultyMitra, an AI teaching assistant for Indian college faculty. Analyze this syllabus and return a WhatsApp-friendly response (no markdown, use emojis) with: 1) Overall relevance score out of 100, 2) Unit-by-unit verdict using ✅ Keep, ⚠️ Update, or ❌ Remove, 3) Specific replacement suggestions. Keep it concise for mobile reading. End with: Reply ASSIGN to generate a practical assignment. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION}`;
   const reply = await callClaude(systemPrompt, body);
-  const finalResponse = attachSearchLink(reply);
-  await logMessage({ faculty_id: faculty.id, intent: 'AUDIT', input_text: body, response_text: finalResponse });
-  return buildTwiML(finalResponse);
+  await logMessage({ faculty_id: faculty.id, intent: 'AUDIT', input_text: body, response_text: reply });
+  return buildTwiML(reply);
 }
 
 async function runAssignGeneration(faculty: FacultyProfile, body: string): Promise<string> {
-  const systemPrompt = `You are FacultyMitra. Generate a practical, real-world project-based assignment for Indian college students. Reference real Indian companies (Swiggy, UPI, Zomato, Flipkart). Include: project title, objective, 3-4 tasks, evaluation rubric, hints. Format for WhatsApp (no markdown, use emojis, keep concise). ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION} ${SEARCH_KEYWORDS_INSTRUCTION}`;
+  const systemPrompt = `You are FacultyMitra. Generate a practical, real-world project-based assignment for Indian college students. Reference real Indian companies (Swiggy, UPI, Zomato, Flipkart). Include: project title, objective, 3-4 tasks, evaluation rubric, hints. Format for WhatsApp (no markdown, use emojis, keep concise). ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION}`;
   const reply = await callClaude(systemPrompt, body);
-  const finalResponse = attachSearchLink(reply);
-  await logMessage({ faculty_id: faculty.id, intent: 'ASSIGN', input_text: body, response_text: finalResponse });
-  return buildTwiML(finalResponse);
+  await logMessage({ faculty_id: faculty.id, intent: 'ASSIGN', input_text: body, response_text: reply });
+  return buildTwiML(reply);
 }
 
 async function runTopicCheck(faculty: FacultyProfile, body: string): Promise<string> {
-  const systemPrompt = `You are FacultyMitra. A college faculty is asking if a topic is worth teaching in 2026. Give: 1) Verdict: TEACH / SKIP / PARTIAL with emoji, 2) Why in 2 lines, 3) Real Indian industry use cases, 4) If TEACH or PARTIAL: a 3-point teach-it-in-1-class guide. Format for WhatsApp. Be direct and practical. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION} ${SEARCH_KEYWORDS_INSTRUCTION}`;
+  const systemPrompt = `You are FacultyMitra. A college faculty is asking if a topic is worth teaching in 2026. Give: 1) Verdict: TEACH / SKIP / PARTIAL with emoji, 2) Why in 2 lines, 3) Real Indian industry use cases, 4) If TEACH or PARTIAL: a 3-point teach-it-in-1-class guide. Format for WhatsApp. Be direct and practical. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION}`;
   const reply = await callClaude(systemPrompt, body);
-  const finalResponse = attachSearchLink(reply);
-  await logMessage({ faculty_id: faculty.id, intent: 'TOPIC', input_text: body, response_text: finalResponse });
-  return buildTwiML(finalResponse);
+  await logMessage({ faculty_id: faculty.id, intent: 'TOPIC', input_text: body, response_text: reply });
+  return buildTwiML(reply);
 }
 
 // ─── Intent handlers (first message — keyword only) ──────────────────────────
@@ -184,11 +164,10 @@ async function handleTopic(faculty: FacultyProfile, phoneHash: string, body: str
 }
 
 async function handleGeneral(message: string, faculty: FacultyProfile): Promise<string> {
-  const systemPrompt = `You are FacultyMitra, an AI teaching assistant for Indian college faculty. The faculty member may ask you anything related to teaching, education, curriculum, pedagogy, or their subject. Answer helpfully and practically. Keep responses concise for WhatsApp. Reference Indian colleges, universities, and education context where relevant. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION} ${SEARCH_KEYWORDS_INSTRUCTION}`;
+  const systemPrompt = `You are FacultyMitra, an AI teaching assistant for Indian college faculty. The faculty member may ask you anything related to teaching, education, curriculum, pedagogy, or their subject. Answer helpfully and practically. Keep responses concise for WhatsApp. Reference Indian colleges, universities, and education context where relevant. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION}`;
   const reply = await callClaude(systemPrompt, message);
-  const finalResponse = attachSearchLink(reply);
-  await logMessage({ faculty_id: faculty.id, intent: 'GENERAL', input_text: message, response_text: finalResponse });
-  return buildTwiML(finalResponse);
+  await logMessage({ faculty_id: faculty.id, intent: 'GENERAL', input_text: message, response_text: reply });
+  return buildTwiML(reply);
 }
 
 // ─── Main entry point ─────────────────────────────────────────────────────────
