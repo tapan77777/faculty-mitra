@@ -125,14 +125,11 @@ export async function getAllConversations(
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  const [{ data: logs, count }, _] = await Promise.all([
-    supabase
-      .from('message_logs')
-      .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false })
-      .range(from, to),
-    Promise.resolve(null),
-  ]);
+  const { data: logs, count } = await supabase
+    .from('message_logs')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
 
   if (!logs?.length) return { rows: [], total: count ?? 0 };
 
