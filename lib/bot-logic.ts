@@ -183,6 +183,14 @@ async function handleTopic(faculty: FacultyProfile, phoneHash: string, body: str
   return runTopicCheck(faculty, body);
 }
 
+async function handleGeneral(message: string, faculty: FacultyProfile): Promise<string> {
+  const systemPrompt = `You are FacultyMitra, an AI teaching assistant for Indian college faculty. The faculty member may ask you anything related to teaching, education, curriculum, pedagogy, or their subject. Answer helpfully and practically. Keep responses concise for WhatsApp. Reference Indian colleges, universities, and education context where relevant. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION} ${SEARCH_KEYWORDS_INSTRUCTION}`;
+  const reply = await callClaude(systemPrompt, message);
+  const finalResponse = attachSearchLink(reply);
+  await logMessage({ faculty_id: faculty.id, intent: 'GENERAL', input_text: message, response_text: finalResponse });
+  return buildTwiML(finalResponse);
+}
+
 // ─── Main entry point ─────────────────────────────────────────────────────────
 
 export async function processMessage(from: string, body: string, hasMedia: boolean): Promise<string> {
@@ -241,7 +249,7 @@ export async function processMessage(from: string, body: string, hasMedia: boole
   } else if (upper.includes('TOPIC')) {
     response = await handleTopic(faculty, phoneHash, trimmed);
   } else {
-    response = buildTwiML(helpMessage(faculty.name));
+    response = await handleGeneral(trimmed, faculty);
   }
 
   await updateFacultyStats(faculty);
