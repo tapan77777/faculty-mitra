@@ -5,6 +5,9 @@ import { callClaude } from './claude';
 const LANGUAGE_INSTRUCTION =
   "Detect the language of the faculty's message. If they write in Hindi, respond in Hindi. If English, respond in English. Always use simple language.";
 
+const NO_MARKDOWN_INSTRUCTION =
+  "IMPORTANT: Do not use any markdown formatting. No asterisks for bold, no hashtags for headers, no dashes for bullets. Use plain text only. Use emojis to structure your response instead of markdown symbols.";
+
 function hashPhone(phone: string): string {
   return crypto.createHash('sha256').update(phone).digest('hex');
 }
@@ -102,21 +105,21 @@ async function handleOnboarding(phoneHash: string, body: string): Promise<string
 // ─── Flow runners (call Claude, log, return TwiML) ────────────────────────────
 
 async function runAuditAnalysis(faculty: FacultyProfile, body: string): Promise<string> {
-  const systemPrompt = `You are FacultyMitra, an AI teaching assistant for Indian college faculty. Analyze this syllabus and return a WhatsApp-friendly response (no markdown, use emojis) with: 1) Overall relevance score out of 100, 2) Unit-by-unit verdict using ✅ Keep, ⚠️ Update, or ❌ Remove, 3) Specific replacement suggestions. Keep it concise for mobile reading. End with: Reply ASSIGN to generate a practical assignment. ${LANGUAGE_INSTRUCTION}`;
+  const systemPrompt = `You are FacultyMitra, an AI teaching assistant for Indian college faculty. Analyze this syllabus and return a WhatsApp-friendly response (no markdown, use emojis) with: 1) Overall relevance score out of 100, 2) Unit-by-unit verdict using ✅ Keep, ⚠️ Update, or ❌ Remove, 3) Specific replacement suggestions. Keep it concise for mobile reading. End with: Reply ASSIGN to generate a practical assignment. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION}`;
   const reply = await callClaude(systemPrompt, body);
   await logMessage({ faculty_id: faculty.id, intent: 'AUDIT', input_text: body, response_text: reply });
   return buildTwiML(reply);
 }
 
 async function runAssignGeneration(faculty: FacultyProfile, body: string): Promise<string> {
-  const systemPrompt = `You are FacultyMitra. Generate a practical, real-world project-based assignment for Indian college students. Reference real Indian companies (Swiggy, UPI, Zomato, Flipkart). Include: project title, objective, 3-4 tasks, evaluation rubric, hints. Format for WhatsApp (no markdown, use emojis, keep concise). ${LANGUAGE_INSTRUCTION}`;
+  const systemPrompt = `You are FacultyMitra. Generate a practical, real-world project-based assignment for Indian college students. Reference real Indian companies (Swiggy, UPI, Zomato, Flipkart). Include: project title, objective, 3-4 tasks, evaluation rubric, hints. Format for WhatsApp (no markdown, use emojis, keep concise). ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION}`;
   const reply = await callClaude(systemPrompt, body);
   await logMessage({ faculty_id: faculty.id, intent: 'ASSIGN', input_text: body, response_text: reply });
   return buildTwiML(reply);
 }
 
 async function runTopicCheck(faculty: FacultyProfile, body: string): Promise<string> {
-  const systemPrompt = `You are FacultyMitra. A college faculty is asking if a topic is worth teaching in 2026. Give: 1) Verdict: TEACH / SKIP / PARTIAL with emoji, 2) Why in 2 lines, 3) Real Indian industry use cases, 4) If TEACH or PARTIAL: a 3-point teach-it-in-1-class guide. Format for WhatsApp. Be direct and practical. ${LANGUAGE_INSTRUCTION}`;
+  const systemPrompt = `You are FacultyMitra. A college faculty is asking if a topic is worth teaching in 2026. Give: 1) Verdict: TEACH / SKIP / PARTIAL with emoji, 2) Why in 2 lines, 3) Real Indian industry use cases, 4) If TEACH or PARTIAL: a 3-point teach-it-in-1-class guide. Format for WhatsApp. Be direct and practical. ${LANGUAGE_INSTRUCTION} ${NO_MARKDOWN_INSTRUCTION}`;
   const reply = await callClaude(systemPrompt, body);
   await logMessage({ faculty_id: faculty.id, intent: 'TOPIC', input_text: body, response_text: reply });
   return buildTwiML(reply);
