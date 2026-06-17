@@ -1,5 +1,13 @@
 import { supabase, FacultyProfile } from './supabase';
 
+export interface AuditRecord {
+  id: string;
+  faculty_id: string;
+  input_text: string;
+  response_text: string;
+  created_at: string;
+}
+
 export interface FacultyStats {
   totalAudits: number;
   totalAssignments: number;
@@ -35,6 +43,30 @@ export async function getFacultyStats(facultyId: string): Promise<FacultyStats> 
     totalAssignments: rows.filter((r) => r.intent === 'ASSIGN').length,
     totalTopics: rows.filter((r) => r.intent === 'TOPIC').length,
   };
+}
+
+export async function getFacultyAudits(facultyId: string): Promise<AuditRecord[]> {
+  const { data } = await supabase
+    .from('message_logs')
+    .select('id, faculty_id, input_text, response_text, created_at')
+    .eq('faculty_id', facultyId)
+    .eq('intent', 'AUDIT_WEB')
+    .order('created_at', { ascending: false });
+  return (data as AuditRecord[]) ?? [];
+}
+
+export async function getAuditById(
+  auditId: string,
+  facultyId: string
+): Promise<AuditRecord | null> {
+  const { data } = await supabase
+    .from('message_logs')
+    .select('id, faculty_id, input_text, response_text, created_at')
+    .eq('id', auditId)
+    .eq('faculty_id', facultyId)
+    .eq('intent', 'AUDIT_WEB')
+    .single();
+  return (data as AuditRecord) ?? null;
 }
 
 export async function getFacultyRecentActivity(
