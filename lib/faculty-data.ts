@@ -8,6 +8,15 @@ export interface AuditRecord {
   created_at: string;
 }
 
+export interface HistoryRecord {
+  id: string;
+  faculty_id: string;
+  intent: string;
+  input_text: string;
+  response_text: string;
+  created_at: string;
+}
+
 export interface FacultyStats {
   totalAudits: number;
   totalAssignments: number;
@@ -39,10 +48,29 @@ export async function getFacultyStats(facultyId: string): Promise<FacultyStats> 
 
   const rows = data ?? [];
   return {
-    totalAudits: rows.filter((r) => r.intent === 'AUDIT').length,
-    totalAssignments: rows.filter((r) => r.intent === 'ASSIGN').length,
-    totalTopics: rows.filter((r) => r.intent === 'TOPIC').length,
+    totalAudits: rows.filter((r) => r.intent === 'AUDIT' || r.intent === 'AUDIT_WEB').length,
+    totalAssignments: rows.filter((r) => r.intent === 'ASSIGN' || r.intent === 'ASSIGN_WEB').length,
+    totalTopics: rows.filter((r) => r.intent === 'TOPIC' || r.intent === 'TOPIC_WEB').length,
   };
+}
+
+export async function getFacultyHistory(
+  facultyId: string,
+  intent?: string
+): Promise<HistoryRecord[]> {
+  let query = supabase
+    .from('message_logs')
+    .select('id, faculty_id, intent, input_text, response_text, created_at')
+    .eq('faculty_id', facultyId)
+    .in('intent', ['AUDIT_WEB', 'ASSIGN_WEB', 'TOPIC_WEB'])
+    .order('created_at', { ascending: false });
+
+  if (intent) {
+    query = query.eq('intent', intent);
+  }
+
+  const { data } = await query;
+  return (data as HistoryRecord[]) ?? [];
 }
 
 export async function getFacultyAudits(facultyId: string): Promise<AuditRecord[]> {
