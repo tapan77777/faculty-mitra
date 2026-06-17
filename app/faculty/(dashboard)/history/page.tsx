@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { getFacultyByPhoneHash, getFacultyHistory } from '@/lib/faculty-data';
 import type { HistoryRecord } from '@/lib/faculty-data';
 import { formatDistanceToNow, formatDate } from '@/lib/time-utils';
+import DeleteButton from './DeleteButton';
 
 // ── helpers ────────────────────────────────────────────────────────────
 
@@ -213,6 +214,7 @@ export default async function HistoryPage({
                         View Details →
                       </Link>
                     )}
+                    <DeleteButton id={record.id} variant="icon" />
                   </div>
                 </div>
               </div>

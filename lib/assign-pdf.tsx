@@ -171,7 +171,7 @@ interface PdfDocProps {
   hours: string;
 }
 
-function AssignDocument({ result, faculty, subject, semester, topic, difficulty, hours }: PdfDocProps) {
+function AssignDocument({ result, faculty, subject, semester: _semester, topic, difficulty, hours }: PdfDocProps) {
   const generatedDate = new Date().toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',
   });

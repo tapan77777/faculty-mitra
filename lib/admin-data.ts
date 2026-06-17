@@ -49,7 +49,8 @@ export async function getTotalFaculty(): Promise<number> {
 export async function getTotalMessages(): Promise<number> {
   const { count } = await supabase
     .from('message_logs')
-    .select('*', { count: 'exact', head: true });
+    .select('*', { count: 'exact', head: true })
+    .in('intent', ['AUDIT_WEB', 'ASSIGN_WEB', 'TOPIC_WEB']);
   return count ?? 0;
 }
 
@@ -65,22 +66,26 @@ export async function getMostUsedFeature(): Promise<string> {
 export async function getActiveToday(): Promise<number> {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
-  const { count } = await supabase
-    .from('faculty_profiles')
-    .select('*', { count: 'exact', head: true })
-    .gte('last_active', todayStart.toISOString());
-  return count ?? 0;
+  const { data } = await supabase
+    .from('message_logs')
+    .select('faculty_id')
+    .in('intent', ['AUDIT_WEB', 'ASSIGN_WEB', 'TOPIC_WEB'])
+    .gte('created_at', todayStart.toISOString());
+  const unique = new Set((data ?? []).map((r) => r.faculty_id));
+  return unique.size;
 }
 
 export async function getFeatureBreakdown(): Promise<FeatureBreakdown> {
   const { data } = await supabase
     .from('message_logs')
-    .select('intent');
+    .select('intent')
+    .in('intent', ['AUDIT_WEB', 'ASSIGN_WEB', 'TOPIC_WEB']);
 
   const breakdown: FeatureBreakdown = { AUDIT: 0, ASSIGN: 0, TOPIC: 0 };
   for (const row of data ?? []) {
-    const intent = row.intent as keyof FeatureBreakdown;
-    if (intent in breakdown) breakdown[intent]++;
+    if (row.intent === 'AUDIT_WEB') breakdown.AUDIT++;
+    else if (row.intent === 'ASSIGN_WEB') breakdown.ASSIGN++;
+    else if (row.intent === 'TOPIC_WEB') breakdown.TOPIC++;
   }
   return breakdown;
 }
@@ -89,6 +94,7 @@ export async function getRecentActivity(limit = 10): Promise<ActivityItem[]> {
   const { data: logs } = await supabase
     .from('message_logs')
     .select('*')
+    .in('intent', ['AUDIT_WEB', 'ASSIGN_WEB', 'TOPIC_WEB'])
     .order('created_at', { ascending: false })
     .limit(limit);
 

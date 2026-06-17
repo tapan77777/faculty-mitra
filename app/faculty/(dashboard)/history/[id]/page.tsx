@@ -6,6 +6,7 @@ import { formatDate } from '@/lib/time-utils';
 import AuditResultsView from '@/app/faculty/(dashboard)/audit/AuditResultsView';
 import type { AuditResult } from '@/app/faculty/(dashboard)/audit/AuditResultsView';
 import PdfDownloadButton from './PdfDownloadButton';
+import DeleteButton from '../DeleteButton';
 
 interface StoredResult extends AuditResult {
   subject?: string;
@@ -131,6 +132,7 @@ export default async function AuditDetailPage({
       {/* Action buttons */}
       <div className="flex flex-col sm:flex-row gap-3 pb-2">
         <PdfDownloadButton result={result} subject={subject} semester={semester} />
+        <DeleteButton id={params.id} variant="full" />
 
         {updatesNeeded > 0 && (
           <Link
