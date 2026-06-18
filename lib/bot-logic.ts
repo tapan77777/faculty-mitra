@@ -12,6 +12,7 @@ const NO_MARKDOWN_INSTRUCTION =
 function hashPhone(phone: string): string {
   return crypto.createHash('sha256').update(phone).digest('hex');
 }
+//added
 
 function buildTwiML(message: string): string {
   const escaped = message
