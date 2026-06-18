@@ -2,6 +2,140 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getFacultyByPhoneHash, getFacultyStats, getFacultyRecentActivity } from '@/lib/faculty-data';
 import { formatDistanceToNow } from '@/lib/time-utils';
+import { getIndustryPulse } from '@/lib/industry-pulse';
+import type { IndustryPulse } from '@/lib/industry-pulse';
+
+function IndustryPulsePanel({
+  pulse,
+  subject,
+}: {
+  pulse: IndustryPulse | null;
+  subject: string;
+}) {
+  if (!subject?.trim()) {
+    return (
+      <div className="bg-[#0d2420] border border-teal-900 rounded-2xl p-6 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-white font-semibold text-sm">📊 Industry Pulse</p>
+          <p className="text-teal-500 text-xs mt-1">Add your subject in profile to see live industry trends</p>
+        </div>
+        <Link
+          href="/faculty/profile"
+          className="flex-shrink-0 text-xs bg-teal-700 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+        >
+          Update Profile
+        </Link>
+      </div>
+    );
+  }
+
+  if (!pulse) {
+    return (
+      <div className="bg-[#0d2420] border border-teal-900 rounded-2xl p-6 space-y-2">
+        <p className="text-white font-semibold text-sm">
+          📊 Industry Pulse for <span className="text-teal-300">{subject}</span> — Coming Soon
+        </p>
+        <p className="text-teal-500 text-xs leading-relaxed">
+          Currently live for: Computer Science (BCA / MCA / CSE), Electronics &amp; Communication (ECE),
+          Mechanical Engineering (ME), MBA / PGDM, Commerce (B.Com / M.Com)
+        </p>
+        <p className="text-teal-600 text-xs">
+          Want your subject added?{' '}
+          <a href="mailto:hello@facultymitra.com" className="text-teal-400 hover:text-teal-200 underline transition-colors">
+            hello@facultymitra.com
+          </a>
+        </p>
+      </div>
+    );
+  }
+
+  const updatedDate = new Date(pulse.last_updated).toLocaleDateString('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric',
+  });
+
+  return (
+    <div className="bg-gradient-to-br from-[#0d2e2a] to-[#091e1b] border border-teal-700 rounded-2xl overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-teal-800/60">
+        <div>
+          <h3 className="text-white font-bold text-base">
+            📊 Industry Pulse — <span className="text-teal-300">{pulse.subject}</span>
+            <span className="text-teal-600 font-medium"> · {pulse.quarter}</span>
+          </h3>
+          <p className="text-teal-600 text-xs mt-0.5">Skills employers are hiring vs. phasing out right now</p>
+        </div>
+        <span className="flex-shrink-0 text-xs text-teal-600 bg-teal-900/40 border border-teal-800 px-2.5 py-1 rounded-full whitespace-nowrap">
+          Updated {updatedDate}
+        </span>
+      </div>
+
+      {/* Skills columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-teal-800/40 p-5 gap-5 sm:gap-0">
+        {/* Trending */}
+        <div className="sm:pr-5">
+          <p className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            🔥 Trending Skills
+          </p>
+          <div className="space-y-2.5">
+            {pulse.trending_skills.map((skill, i) => (
+              <div key={i} className="bg-green-900/10 border border-green-900/30 rounded-lg px-3.5 py-2.5">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <span className="text-white text-sm font-semibold leading-snug">{skill.name}</span>
+                  <span className="flex-shrink-0 text-xs font-bold text-green-400 bg-green-900/40 border border-green-800 px-2 py-0.5 rounded-full">
+                    {skill.growth}
+                  </span>
+                </div>
+                <p className="text-teal-400 text-xs leading-relaxed">{skill.context}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Declining */}
+        <div className="sm:pl-5">
+          <p className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            ⚠️ Declining Skills
+          </p>
+          <div className="space-y-2.5">
+            {pulse.declining_skills.map((skill, i) => (
+              <div key={i} className="bg-red-900/10 border border-red-900/30 rounded-lg px-3.5 py-2.5">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <span className="text-white text-sm font-semibold leading-snug">{skill.name}</span>
+                  <span className="flex-shrink-0 text-xs font-bold text-red-400 bg-red-900/40 border border-red-800 px-2 py-0.5 rounded-full">
+                    {skill.decline}
+                  </span>
+                </div>
+                <p className="text-teal-400 text-xs leading-relaxed">{skill.context}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Hiring companies */}
+      <div className="px-5 pb-4 border-t border-teal-800/40 pt-4">
+        <p className="text-xs font-semibold text-teal-400 mb-2.5">💼 Companies actively hiring:</p>
+        <div className="flex flex-wrap gap-2">
+          {pulse.hiring_companies.map((company) => (
+            <span
+              key={company}
+              className="text-xs text-teal-300 bg-teal-900/30 border border-teal-800 px-2.5 py-1 rounded-full"
+            >
+              {company}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Source */}
+      {pulse.source_citation && (
+        <div className="px-5 pb-4">
+          <p className="text-xs text-teal-700">Source: {pulse.source_citation}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const intentColors: Record<string, string> = {
   AUDIT: 'bg-blue-900/50 text-blue-300 border-blue-700',
@@ -53,9 +187,10 @@ export default async function FacultyDashboardPage() {
   const faculty = phoneHash ? await getFacultyByPhoneHash(phoneHash) : null;
   if (!faculty) return null;
 
-  const [stats, activity] = await Promise.all([
+  const [stats, activity, pulse] = await Promise.all([
     getFacultyStats(faculty.id),
     getFacultyRecentActivity(faculty.id, 8),
+    faculty.subject ? getIndustryPulse(faculty.subject) : Promise.resolve(null),
   ]);
 
   const statCards = [
@@ -97,6 +232,9 @@ export default async function FacultyDashboardPage() {
           {faculty.subject || 'Faculty Portal'}
         </p>
       </div>
+
+      {/* Industry Pulse */}
+      <IndustryPulsePanel pulse={pulse} subject={faculty.subject} />
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
