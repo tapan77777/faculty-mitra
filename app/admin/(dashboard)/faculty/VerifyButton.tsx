@@ -26,7 +26,7 @@ export default function VerifyButton({ facultyId }: { facultyId: string }) {
     <button
       onClick={handleVerify}
       disabled={loading}
-      className="text-xs text-teal-300 hover:text-white border border-teal-800 hover:border-teal-500 hover:bg-teal-900/30 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap"
+      className="text-xs text-[#635BFF] hover:text-[#5851DB] border border-[#635BFF]/30 hover:border-[#635BFF] hover:bg-[#F0F0FF] px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap"
     >
       {loading ? '...' : 'Verify'}
     </button>

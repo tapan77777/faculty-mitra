@@ -15,6 +15,15 @@ const config: Config = {
           mint: "#CCFBF1",
           seafoam: "#5EEAD4",
         },
+        stripe: {
+          navy: '#0A2540',
+          gray: '#425466',
+          light: '#8898AA',
+          bg: '#F6F9FC',
+          border: '#E3E8EE',
+          indigo: '#635BFF',
+          indigoDark: '#5851DB',
+        },
       },
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],

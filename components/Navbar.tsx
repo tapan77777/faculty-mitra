@@ -27,7 +27,7 @@ export default function Navbar() {
           </span>
           <Link
             href="/admin"
-            className="border border-teal-500 text-teal-400 hover:bg-teal-500 hover:text-white px-3 py-1 rounded text-sm transition-colors"
+            className="border border-[#635BFF] text-[#635BFF] hover:bg-[#635BFF] hover:text-white px-3 py-1 rounded text-sm transition-colors"
           >
             Admin Dashboard
           </Link>

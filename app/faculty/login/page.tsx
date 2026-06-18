@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { BookOpen, ChevronLeft } from 'lucide-react';
 
 const DESIGNATIONS = [
   'Faculty',
@@ -45,10 +46,8 @@ export default function FacultyLoginPage() {
       }
 
       if (checkData.exists) {
-        // Returning user — log in immediately
         await submitLogin();
       } else {
-        // New user — reveal extra fields
         setIsNewUser(true);
       }
     } catch {
@@ -90,37 +89,35 @@ export default function FacultyLoginPage() {
   }
 
   const inputCls =
-    'w-full bg-[#0A2E2A] border border-teal-800 rounded-lg px-4 py-2.5 text-white placeholder-teal-700 focus:outline-none focus:border-teal-500 text-sm';
+    'w-full border border-[#E3E8EE] focus:ring-2 focus:ring-[#635BFF] focus:border-[#635BFF] rounded-lg py-2.5 px-4 text-sm bg-white text-[#0A2540] placeholder-[#8898AA] outline-none transition-all';
 
   return (
-    <div className="min-h-screen bg-[#051c19] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#F6F9FC] flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-teal-600 mb-4">
-            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#635BFF] mb-4">
+            <BookOpen className="w-7 h-7 text-white" strokeWidth={1.5} />
           </div>
-          <h1 className="text-2xl font-bold text-white">FacultyMitra</h1>
-          <p className="text-teal-400 text-sm mt-1">Faculty Portal</p>
+          <h1 className="text-2xl font-bold tracking-tight text-[#0A2540]">FacultyMitra</h1>
+          <p className="text-[#425466] text-sm mt-1">Faculty Portal</p>
         </div>
 
-        <div className="bg-[#0d2420] border border-teal-900 rounded-2xl p-8">
+        <div className="bg-white rounded-2xl border border-[#E3E8EE] shadow-sm p-8">
           {!isNewUser ? (
             <>
-              <h2 className="text-lg font-semibold text-white mb-1">Sign in</h2>
-              <p className="text-teal-500 text-xs mb-6">New here? We&apos;ll create your account automatically.</p>
+              <h2 className="text-lg font-bold tracking-tight text-[#0A2540] mb-1">Sign in</h2>
+              <p className="text-[#8898AA] text-xs mb-6">New here? We&apos;ll create your account automatically.</p>
 
               {error && (
-                <div className="mb-4 px-4 py-3 bg-red-900/30 border border-red-700 rounded-lg text-red-400 text-sm">
+                <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-[#DF1B41] text-sm">
                   {error}
                 </div>
               )}
 
               <form onSubmit={handleContinue} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-teal-300 mb-1.5">Phone Number</label>
+                  <label className="block text-sm text-[#425466] font-medium mb-1.5">Phone Number</label>
                   <input
                     type="tel"
                     value={phone}
@@ -131,7 +128,7 @@ export default function FacultyLoginPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-teal-300 mb-1.5">Your Name</label>
+                  <label className="block text-sm text-[#425466] font-medium mb-1.5">Your Name</label>
                   <input
                     type="text"
                     value={name}
@@ -144,7 +141,7 @@ export default function FacultyLoginPage() {
                 <button
                   type="submit"
                   disabled={loading || phone.length !== 10 || !name.trim()}
-                  className="w-full bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors text-sm mt-2"
+                  className="w-full bg-[#635BFF] hover:bg-[#5851DB] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-lg transition-colors text-sm mt-2"
                 >
                   {loading ? 'Checking...' : 'Continue'}
                 </button>
@@ -155,25 +152,23 @@ export default function FacultyLoginPage() {
               <div className="flex items-center gap-2 mb-1">
                 <button
                   onClick={() => { setIsNewUser(false); setError(''); }}
-                  className="text-teal-500 hover:text-teal-300 transition-colors"
+                  className="text-[#425466] hover:text-[#0A2540] transition-colors"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <ChevronLeft className="w-4 h-4" strokeWidth={2} />
                 </button>
-                <h2 className="text-lg font-semibold text-white">Create Account</h2>
+                <h2 className="text-lg font-bold tracking-tight text-[#0A2540]">Create Account</h2>
               </div>
-              <p className="text-teal-500 text-xs mb-6 ml-6">A few more details to get started</p>
+              <p className="text-[#8898AA] text-xs mb-6 ml-6">A few more details to get started</p>
 
               {error && (
-                <div className="mb-4 px-4 py-3 bg-red-900/30 border border-red-700 rounded-lg text-red-400 text-sm">
+                <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-[#DF1B41] text-sm">
                   {error}
                 </div>
               )}
 
               <form onSubmit={handleSignup} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-teal-300 mb-1.5">College / Institution</label>
+                  <label className="block text-sm text-[#425466] font-medium mb-1.5">College / Institution</label>
                   <input
                     type="text"
                     value={college}
@@ -185,7 +180,7 @@ export default function FacultyLoginPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-teal-300 mb-1.5">Your Role</label>
+                  <label className="block text-sm text-[#425466] font-medium mb-1.5">Your Role</label>
                   <select
                     value={designation}
                     onChange={(e) => setDesignation(e.target.value)}
@@ -199,7 +194,7 @@ export default function FacultyLoginPage() {
                 <button
                   type="submit"
                   disabled={loading || !college.trim()}
-                  className="w-full bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors text-sm mt-2"
+                  className="w-full bg-[#635BFF] hover:bg-[#5851DB] disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-lg transition-colors text-sm mt-2"
                 >
                   {loading ? 'Creating account...' : 'Create Account'}
                 </button>

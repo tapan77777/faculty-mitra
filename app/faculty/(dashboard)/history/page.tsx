@@ -4,6 +4,7 @@ import { getFacultyByPhoneHash, getFacultyHistory } from '@/lib/faculty-data';
 import type { HistoryRecord } from '@/lib/faculty-data';
 import { formatDistanceToNow, formatDate } from '@/lib/time-utils';
 import DeleteButton from './DeleteButton';
+import { Clock } from 'lucide-react';
 
 // ── helpers ────────────────────────────────────────────────────────────
 
@@ -19,22 +20,22 @@ function shortDate(dateStr: string) {
 }
 
 const intentMeta: Record<string, { label: string; cls: string }> = {
-  AUDIT_WEB:  { label: 'AUDIT',  cls: 'bg-blue-900/50 text-blue-300 border-blue-700' },
-  ASSIGN_WEB: { label: 'ASSIGN', cls: 'bg-green-900/50 text-green-300 border-green-700' },
-  TOPIC_WEB:  { label: 'TOPIC',  cls: 'bg-purple-900/50 text-purple-300 border-purple-700' },
+  AUDIT_WEB:  { label: 'AUDIT',  cls: 'bg-blue-50 text-blue-700 border-blue-200' },
+  ASSIGN_WEB: { label: 'ASSIGN', cls: 'bg-green-50 text-green-700 border-green-200' },
+  TOPIC_WEB:  { label: 'TOPIC',  cls: 'bg-purple-50 text-purple-700 border-purple-200' },
 };
 
 const verdictMeta: Record<string, string> = {
-  TEACH:   'bg-green-900/50 text-green-300 border-green-700',
-  SKIP:    'bg-red-900/50 text-red-300 border-red-700',
-  PARTIAL: 'bg-amber-900/50 text-amber-300 border-amber-700',
+  TEACH:   'bg-[#F0FFF4] text-[#0E9F6E] border-[#A7F3D0]',
+  SKIP:    'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]',
+  PARTIAL: 'bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]',
 };
 
 function scoreCls(score: number) {
-  if (score >= 80) return 'bg-green-900/50 text-green-300 border-green-700';
-  if (score >= 60) return 'bg-blue-900/50 text-blue-300 border-blue-700';
-  if (score >= 40) return 'bg-amber-900/50 text-amber-300 border-amber-700';
-  return 'bg-red-900/50 text-red-300 border-red-700';
+  if (score >= 80) return 'bg-[#F0FFF4] text-[#0E9F6E] border-[#A7F3D0]';
+  if (score >= 60) return 'bg-[#F0F0FF] text-[#635BFF] border-[#635BFF]/30';
+  if (score >= 40) return 'bg-[#FFFBEB] text-[#D97706] border-[#FDE68A]';
+  return 'bg-[#FEF2F2] text-[#DC2626] border-[#FECACA]';
 }
 
 interface CardInfo {
@@ -114,21 +115,21 @@ export default async function HistoryPage({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-white">History</h2>
-          <p className="text-teal-500 text-sm mt-0.5">All your AI-assisted sessions</p>
+          <h2 className="text-xl font-bold tracking-tight text-[#0A2540]">History</h2>
+          <p className="text-[#425466] text-sm mt-0.5">All your AI-assisted sessions</p>
         </div>
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-1 bg-[#0A2E2A]/60 border border-teal-900 rounded-xl p-1 w-fit">
+      <div className="border-b border-[#E3E8EE] flex gap-0">
         {FILTERS.map(({ label, value }) => (
           <Link
             key={value}
             href={value ? `/faculty/history?filter=${value}` : '/faculty/history'}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+            className={`px-4 py-2.5 text-xs font-medium transition-colors whitespace-nowrap border-b-2 -mb-px ${
               filter === value
-                ? 'bg-teal-600 text-white'
-                : 'text-teal-400 hover:text-white hover:bg-teal-900/40'
+                ? 'border-[#635BFF] text-[#635BFF]'
+                : 'border-transparent text-[#8898AA] hover:text-[#425466]'
             }`}
           >
             {label}
@@ -138,23 +139,21 @@ export default async function HistoryPage({
 
       {/* Empty state */}
       {records.length === 0 && (
-        <div className="bg-[#0d2420] border border-teal-900 rounded-2xl p-12 flex flex-col items-center text-center">
-          <div className="w-14 h-14 rounded-2xl bg-teal-900/40 flex items-center justify-center mb-4">
-            <svg className="w-7 h-7 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+        <div className="bg-white border border-[#E3E8EE] rounded-2xl p-12 flex flex-col items-center text-center shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-[#F0F0FF] flex items-center justify-center mb-4">
+            <Clock className="w-7 h-7 text-[#635BFF]" strokeWidth={1.5} />
           </div>
-          <p className="text-white font-semibold mb-1">Nothing here yet</p>
-          <p className="text-teal-600 text-sm mb-5">
+          <p className="text-[#0A2540] font-semibold mb-1">Nothing here yet</p>
+          <p className="text-[#425466] text-sm mb-5">
             {filter === 'AUDIT_WEB'  && 'No audits found. Audit a syllabus to see it here.'}
             {filter === 'ASSIGN_WEB' && 'No assignments found. Generate one to see it here.'}
             {filter === 'TOPIC_WEB'  && 'No topic checks found. Check a topic to see it here.'}
             {!filter && 'Use Audit, Assign, or Topic to see your history here.'}
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
-            <Link href="/faculty/audit"  className="bg-teal-600 hover:bg-teal-500 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-xs">Audit Syllabus</Link>
-            <Link href="/faculty/assign" className="bg-green-700 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-xs">Generate Assignment</Link>
-            <Link href="/faculty/topic"  className="bg-purple-700 hover:bg-purple-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-xs">Check Topic</Link>
+            <Link href="/faculty/audit"  className="bg-[#635BFF] hover:bg-[#5851DB] text-white font-medium px-4 py-2 rounded-lg transition-colors text-xs">Audit Syllabus</Link>
+            <Link href="/faculty/assign" className="bg-[#F0FFF4] hover:bg-green-50 border border-[#A7F3D0] text-[#0E9F6E] font-medium px-4 py-2 rounded-lg transition-colors text-xs">Generate Assignment</Link>
+            <Link href="/faculty/topic"  className="bg-[#F5F3FF] hover:bg-purple-50 border border-purple-200 text-purple-700 font-medium px-4 py-2 rounded-lg transition-colors text-xs">Check Topic</Link>
           </div>
         </div>
       )}
@@ -169,27 +168,27 @@ export default async function HistoryPage({
             return (
               <div
                 key={record.id}
-                className="bg-[#0d2420] border border-teal-900 rounded-xl p-5 hover:border-teal-700 transition-colors"
+                className="bg-white border border-[#E3E8EE] rounded-xl p-5 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     {/* Intent badge + title */}
                     <div className="flex items-center gap-2 flex-wrap mb-1.5">
                       {im && (
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded border flex-shrink-0 ${im.cls}`}>
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-md border flex-shrink-0 ${im.cls}`}>
                           {im.label}
                         </span>
                       )}
-                      <h3 className="text-white font-semibold text-sm leading-tight">{info.title}</h3>
+                      <h3 className="text-[#0A2540] font-semibold text-sm leading-tight">{info.title}</h3>
                     </div>
 
                     {/* Subtitle */}
-                    <p className="text-teal-400 text-xs leading-relaxed line-clamp-2 mb-2">
+                    <p className="text-[#425466] text-xs leading-relaxed line-clamp-2 mb-2">
                       {info.subtitle}
                     </p>
 
                     {/* Date */}
-                    <p className="text-teal-600 text-xs" title={formatDate(record.created_at)}>
+                    <p className="text-[#8898AA] text-xs" title={formatDate(record.created_at)}>
                       {formatDistanceToNow(record.created_at)}
                     </p>
                   </div>
@@ -197,19 +196,19 @@ export default async function HistoryPage({
                   {/* Right badges + actions */}
                   <div className="flex flex-col items-end gap-2.5 flex-shrink-0">
                     {info.score !== null && (
-                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${scoreCls(info.score)}`}>
+                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-md border ${scoreCls(info.score)}`}>
                         {info.score}/100
                       </span>
                     )}
                     {info.topicVerdict && (
-                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${verdictMeta[info.topicVerdict] ?? ''}`}>
+                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-md border ${verdictMeta[info.topicVerdict] ?? ''}`}>
                         {info.topicVerdict}
                       </span>
                     )}
                     {info.showDetails && (
                       <Link
                         href={`/faculty/history/${record.id}`}
-                        className="text-xs text-teal-400 hover:text-white border border-teal-800 hover:border-teal-500 hover:bg-teal-900/30 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                        className="text-xs text-[#635BFF] hover:text-[#5851DB] border border-[#635BFF]/30 hover:border-[#635BFF] hover:bg-[#F0F0FF] px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
                       >
                         View Details →
                       </Link>

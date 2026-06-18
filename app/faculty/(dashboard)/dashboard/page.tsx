@@ -4,6 +4,11 @@ import { getFacultyByPhoneHash, getFacultyStats, getFacultyRecentActivity } from
 import { formatDistanceToNow } from '@/lib/time-utils';
 import { getIndustryPulse } from '@/lib/industry-pulse';
 import type { IndustryPulse } from '@/lib/industry-pulse';
+import {
+  BarChart3, TrendingUp, AlertTriangle, Briefcase,
+  ClipboardList, Pencil, BookOpen, Zap, CheckCircle2,
+  ArrowRight,
+} from 'lucide-react';
 
 function IndustryPulsePanel({
   pulse,
@@ -14,14 +19,17 @@ function IndustryPulsePanel({
 }) {
   if (!subject?.trim()) {
     return (
-      <div className="bg-[#0d2420] border border-teal-900 rounded-2xl p-6 flex items-center justify-between gap-4">
+      <div className="bg-white border border-[#E3E8EE] rounded-2xl p-6 flex items-center justify-between gap-4">
         <div>
-          <p className="text-white font-semibold text-sm">📊 Industry Pulse</p>
-          <p className="text-teal-500 text-xs mt-1">Add your subject in profile to see live industry trends</p>
+          <p className="text-[#0A2540] font-semibold text-sm flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-[#635BFF]" strokeWidth={1.5} />
+            Industry Pulse
+          </p>
+          <p className="text-[#8898AA] text-xs mt-1">Add your subject in profile to see live industry trends</p>
         </div>
         <Link
           href="/faculty/profile"
-          className="flex-shrink-0 text-xs bg-teal-700 hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          className="flex-shrink-0 text-xs bg-[#635BFF] hover:bg-[#5851DB] text-white px-4 py-2 rounded-lg font-medium transition-colors"
         >
           Update Profile
         </Link>
@@ -31,17 +39,18 @@ function IndustryPulsePanel({
 
   if (!pulse) {
     return (
-      <div className="bg-[#0d2420] border border-teal-900 rounded-2xl p-6 space-y-2">
-        <p className="text-white font-semibold text-sm">
-          📊 Industry Pulse for <span className="text-teal-300">{subject}</span> — Coming Soon
+      <div className="bg-white border border-[#E3E8EE] rounded-2xl p-6 space-y-2">
+        <p className="text-[#0A2540] font-semibold text-sm flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-[#635BFF]" strokeWidth={1.5} />
+          Industry Pulse for <span className="text-[#635BFF]">{subject}</span> — Coming Soon
         </p>
-        <p className="text-teal-500 text-xs leading-relaxed">
+        <p className="text-[#425466] text-xs leading-relaxed">
           Currently live for: Computer Science (BCA / MCA / CSE), Electronics &amp; Communication (ECE),
           Mechanical Engineering (ME), MBA / PGDM, Commerce (B.Com / M.Com)
         </p>
-        <p className="text-teal-600 text-xs">
+        <p className="text-[#8898AA] text-xs">
           Want your subject added?{' '}
-          <a href="mailto:hello@facultymitra.com" className="text-teal-400 hover:text-teal-200 underline transition-colors">
+          <a href="mailto:hello@facultymitra.com" className="text-[#635BFF] hover:text-[#5851DB] underline transition-colors">
             hello@facultymitra.com
           </a>
         </p>
@@ -54,38 +63,40 @@ function IndustryPulsePanel({
   });
 
   return (
-    <div className="bg-gradient-to-br from-[#0d2e2a] to-[#091e1b] border border-teal-700 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-[#E3E8EE] rounded-2xl overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-teal-800/60">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[#E3E8EE] bg-gradient-to-r from-[#F0F0FF] to-white">
         <div>
-          <h3 className="text-white font-bold text-base">
-            📊 Industry Pulse — <span className="text-teal-300">{pulse.subject}</span>
-            <span className="text-teal-600 font-medium"> · {pulse.quarter}</span>
+          <h3 className="text-[#0A2540] font-bold text-base flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-[#635BFF]" strokeWidth={1.5} />
+            Industry Pulse — <span className="text-[#635BFF]">{pulse.subject}</span>
+            <span className="text-[#8898AA] font-medium"> · {pulse.quarter}</span>
           </h3>
-          <p className="text-teal-600 text-xs mt-0.5">Skills employers are hiring vs. phasing out right now</p>
+          <p className="text-[#8898AA] text-xs mt-0.5">Skills employers are hiring vs. phasing out right now</p>
         </div>
-        <span className="flex-shrink-0 text-xs text-teal-600 bg-teal-900/40 border border-teal-800 px-2.5 py-1 rounded-full whitespace-nowrap">
+        <span className="flex-shrink-0 text-xs text-[#8898AA] bg-[#F6F9FC] border border-[#E3E8EE] px-2.5 py-1 rounded-full whitespace-nowrap">
           Updated {updatedDate}
         </span>
       </div>
 
       {/* Skills columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-teal-800/40 p-5 gap-5 sm:gap-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E3E8EE] p-5 gap-5 sm:gap-0">
         {/* Trending */}
         <div className="sm:pr-5">
-          <p className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-            🔥 Trending Skills
+          <p className="text-xs font-semibold text-[#0E9F6E] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <TrendingUp className="w-3.5 h-3.5" strokeWidth={2} />
+            Trending Skills
           </p>
           <div className="space-y-2.5">
             {pulse.trending_skills.map((skill, i) => (
-              <div key={i} className="bg-green-900/10 border border-green-900/30 rounded-lg px-3.5 py-2.5">
+              <div key={i} className="bg-[#F0FFF4] border border-[#A7F3D0] rounded-lg px-3.5 py-2.5">
                 <div className="flex items-center justify-between gap-2 mb-0.5">
-                  <span className="text-white text-sm font-semibold leading-snug">{skill.name}</span>
-                  <span className="flex-shrink-0 text-xs font-bold text-green-400 bg-green-900/40 border border-green-800 px-2 py-0.5 rounded-full">
+                  <span className="text-[#0A2540] text-sm font-semibold leading-snug">{skill.name}</span>
+                  <span className="flex-shrink-0 text-xs font-bold text-[#0E9F6E] bg-white border border-[#A7F3D0] px-2 py-0.5 rounded-full">
                     {skill.growth}
                   </span>
                 </div>
-                <p className="text-teal-400 text-xs leading-relaxed">{skill.context}</p>
+                <p className="text-[#425466] text-xs leading-relaxed">{skill.context}</p>
               </div>
             ))}
           </div>
@@ -93,19 +104,20 @@ function IndustryPulsePanel({
 
         {/* Declining */}
         <div className="sm:pl-5">
-          <p className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-            ⚠️ Declining Skills
+          <p className="text-xs font-semibold text-[#DF1B41] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5" strokeWidth={2} />
+            Declining Skills
           </p>
           <div className="space-y-2.5">
             {pulse.declining_skills.map((skill, i) => (
-              <div key={i} className="bg-red-900/10 border border-red-900/30 rounded-lg px-3.5 py-2.5">
+              <div key={i} className="bg-[#FEF2F2] border border-[#FECACA] rounded-lg px-3.5 py-2.5">
                 <div className="flex items-center justify-between gap-2 mb-0.5">
-                  <span className="text-white text-sm font-semibold leading-snug">{skill.name}</span>
-                  <span className="flex-shrink-0 text-xs font-bold text-red-400 bg-red-900/40 border border-red-800 px-2 py-0.5 rounded-full">
+                  <span className="text-[#0A2540] text-sm font-semibold leading-snug">{skill.name}</span>
+                  <span className="flex-shrink-0 text-xs font-bold text-[#DC2626] bg-white border border-[#FECACA] px-2 py-0.5 rounded-full">
                     {skill.decline}
                   </span>
                 </div>
-                <p className="text-teal-400 text-xs leading-relaxed">{skill.context}</p>
+                <p className="text-[#425466] text-xs leading-relaxed">{skill.context}</p>
               </div>
             ))}
           </div>
@@ -113,13 +125,16 @@ function IndustryPulsePanel({
       </div>
 
       {/* Hiring companies */}
-      <div className="px-5 pb-4 border-t border-teal-800/40 pt-4">
-        <p className="text-xs font-semibold text-teal-400 mb-2.5">💼 Companies actively hiring:</p>
+      <div className="px-5 pb-4 border-t border-[#E3E8EE] pt-4">
+        <p className="text-xs font-semibold text-[#425466] mb-2.5 flex items-center gap-1.5">
+          <Briefcase className="w-3.5 h-3.5 text-[#635BFF]" strokeWidth={1.5} />
+          Companies actively hiring:
+        </p>
         <div className="flex flex-wrap gap-2">
           {pulse.hiring_companies.map((company) => (
             <span
               key={company}
-              className="text-xs text-teal-300 bg-teal-900/30 border border-teal-800 px-2.5 py-1 rounded-full"
+              className="text-xs text-[#425466] bg-[#F6F9FC] border border-[#E3E8EE] px-2.5 py-1 rounded-md"
             >
               {company}
             </span>
@@ -130,7 +145,7 @@ function IndustryPulsePanel({
       {/* Source */}
       {pulse.source_citation && (
         <div className="px-5 pb-4">
-          <p className="text-xs text-teal-700">Source: {pulse.source_citation}</p>
+          <p className="text-xs text-[#8898AA]">Source: {pulse.source_citation}</p>
         </div>
       )}
     </div>
@@ -138,10 +153,10 @@ function IndustryPulsePanel({
 }
 
 const intentColors: Record<string, string> = {
-  AUDIT: 'bg-blue-900/50 text-blue-300 border-blue-700',
-  ASSIGN: 'bg-green-900/50 text-green-300 border-green-700',
-  TOPIC: 'bg-purple-900/50 text-purple-300 border-purple-700',
-  GENERAL: 'bg-teal-900/50 text-teal-300 border-teal-700',
+  AUDIT: 'bg-blue-50 text-blue-700 border-blue-200',
+  ASSIGN: 'bg-green-50 text-green-700 border-green-200',
+  TOPIC: 'bg-purple-50 text-purple-700 border-purple-200',
+  GENERAL: 'bg-[#F6F9FC] text-[#425466] border-[#E3E8EE]',
 };
 
 const actionButtons = [
@@ -149,34 +164,22 @@ const actionButtons = [
     href: '/faculty/audit',
     label: 'Audit My Syllabus',
     description: 'Check your syllabus against learning outcomes',
-    color: 'from-blue-900/40 to-blue-900/10 border-blue-800 hover:border-blue-600',
-    icon: (
-      <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-      </svg>
-    ),
+    iconBg: 'bg-[#F0F0FF]',
+    icon: <ClipboardList className="w-5 h-5 text-[#635BFF]" strokeWidth={1.5} />,
   },
   {
     href: '/faculty/assign',
     label: 'Generate Assignment',
     description: 'Create custom assignments for your students',
-    color: 'from-green-900/40 to-green-900/10 border-green-800 hover:border-green-600',
-    icon: (
-      <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-      </svg>
-    ),
+    iconBg: 'bg-[#F0FFF4]',
+    icon: <Pencil className="w-5 h-5 text-[#0E9F6E]" strokeWidth={1.5} />,
   },
   {
     href: '/faculty/topic',
     label: 'Check a Topic',
     description: 'Get AI insights on any teaching topic',
-    color: 'from-purple-900/40 to-purple-900/10 border-purple-800 hover:border-purple-600',
-    icon: (
-      <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-      </svg>
-    ),
+    iconBg: 'bg-[#F5F3FF]',
+    icon: <BookOpen className="w-5 h-5 text-purple-600" strokeWidth={1.5} />,
   },
 ];
 
@@ -197,47 +200,45 @@ export default async function FacultyDashboardPage() {
     {
       label: 'Total Audits Done',
       value: stats.totalAudits,
-      icon: '📋',
+      icon: <ClipboardList className="w-8 h-8 text-[#635BFF] opacity-60" strokeWidth={1.5} />,
       sub: 'Syllabus checks',
     },
     {
       label: 'Assignments Generated',
       value: stats.totalAssignments,
-      icon: '✏️',
+      icon: <Pencil className="w-8 h-8 text-[#635BFF] opacity-60" strokeWidth={1.5} />,
       sub: 'Via WhatsApp & web',
     },
     {
       label: 'Topics Checked',
       value: stats.totalTopics,
-      icon: '📚',
+      icon: <BookOpen className="w-8 h-8 text-[#635BFF] opacity-60" strokeWidth={1.5} />,
       sub: 'AI topic insights',
     },
     {
       label: 'Last Active',
       value: faculty.last_active ? formatDistanceToNow(faculty.last_active) : 'Never',
-      icon: '⚡',
+      icon: <Zap className="w-8 h-8 text-[#635BFF] opacity-60" strokeWidth={1.5} />,
       sub: 'Most recent use',
     },
   ];
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-8 max-w-5xl">
       {/* Welcome card */}
-      <div className="bg-gradient-to-r from-teal-900/40 to-teal-900/10 border border-teal-800 rounded-2xl p-6">
+      <div className="bg-gradient-to-br from-[#635BFF] to-[#5851DB] rounded-2xl p-8 text-white">
         <div className="flex items-center gap-2.5 flex-wrap">
-          <h2 className="text-xl font-bold text-white">
+          <h2 className="text-2xl font-bold tracking-tight">
             Hi {faculty.name.split(' ')[0]}, here&apos;s your dashboard
           </h2>
           {faculty.is_verified && (
-            <span className="flex items-center gap-1 text-xs font-semibold text-green-300 bg-green-900/30 border border-green-700 px-2.5 py-0.5 rounded-full">
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
+            <span className="flex items-center gap-1 text-xs font-semibold text-white bg-white/20 border border-white/30 px-2.5 py-0.5 rounded-full">
+              <CheckCircle2 className="w-3 h-3" strokeWidth={2} />
               Verified
             </span>
           )}
         </div>
-        <p className="text-teal-400 text-sm mt-1">
+        <p className="opacity-80 text-sm mt-1">
           {faculty.college ? `${faculty.college} · ` : ''}
           {faculty.designation ? `${faculty.designation} · ` : ''}
           {faculty.subject || 'Faculty Portal'}
@@ -250,74 +251,90 @@ export default async function FacultyDashboardPage() {
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((s) => (
-          <div key={s.label} className="bg-[#0d2420] border border-teal-900 rounded-xl p-5">
-            <div className="text-2xl mb-2">{s.icon}</div>
-            <div className="text-2xl font-bold text-white">{s.value}</div>
-            <div className="text-sm font-medium text-teal-300 mt-0.5 leading-tight">{s.label}</div>
-            <div className="text-xs text-teal-600 mt-0.5">{s.sub}</div>
+          <div key={s.label} className="bg-white border border-[#E3E8EE] rounded-2xl p-6 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 relative overflow-hidden">
+            <div className="absolute top-4 right-4">
+              {s.icon}
+            </div>
+            <div className="text-3xl font-bold text-[#0A2540]">{s.value}</div>
+            <div className="text-sm text-[#425466] mt-1 leading-tight">{s.label}</div>
+            <div className="text-xs text-[#8898AA] mt-0.5">{s.sub}</div>
           </div>
         ))}
       </div>
 
-      {/* Action buttons */}
+      {/* Quick actions */}
       <div>
-        <h3 className="text-base font-semibold text-white mb-3">Quick Actions</h3>
+        <h3 className="text-base font-bold tracking-tight text-[#0A2540] mb-3">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {actionButtons.map((btn) => (
             <Link
               key={btn.href}
               href={btn.href}
-              className={`bg-gradient-to-br ${btn.color} border rounded-xl p-5 flex flex-col gap-3 transition-all hover:scale-[1.02] active:scale-[0.98]`}
+              className="bg-white border border-[#E3E8EE] rounded-2xl p-6 flex items-start justify-between gap-3 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 group"
             >
-              <div className="w-10 h-10 rounded-lg bg-[#051c19]/60 flex items-center justify-center">
-                {btn.icon}
+              <div className="flex items-start gap-3">
+                <div className={`w-9 h-9 rounded-lg ${btn.iconBg} flex items-center justify-center flex-shrink-0`}>
+                  {btn.icon}
+                </div>
+                <div>
+                  <p className="font-semibold text-[#0A2540] text-sm">{btn.label}</p>
+                  <p className="text-xs text-[#425466] mt-1">{btn.description}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-white">{btn.label}</p>
-                <p className="text-xs text-teal-400 mt-0.5">{btn.description}</p>
-              </div>
+              <ArrowRight className="w-4 h-4 text-[#8898AA] group-hover:text-[#635BFF] transition-colors flex-shrink-0 mt-0.5" strokeWidth={1.5} />
             </Link>
           ))}
         </div>
       </div>
 
       {/* Recent activity */}
-      <div className="bg-[#0d2420] border border-teal-900 rounded-xl p-6">
-        <h3 className="text-base font-semibold text-white mb-1">Recent Activity</h3>
-        <p className="text-xs text-teal-500 mb-4">Your last {Math.min(activity.length, 8)} interactions</p>
+      <div className="bg-white border border-[#E3E8EE] rounded-2xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#E3E8EE]">
+          <h3 className="text-base font-bold tracking-tight text-[#0A2540]">Recent Activity</h3>
+          <p className="text-xs text-[#8898AA] mt-0.5">Your last {Math.min(activity.length, 8)} interactions</p>
+        </div>
 
         {activity.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-teal-600 text-sm">No activity yet.</p>
-            <p className="text-teal-700 text-xs mt-1">Start by auditing your syllabus or generating an assignment.</p>
+          <div className="text-center py-8 px-6">
+            <p className="text-[#425466] text-sm">No activity yet.</p>
+            <p className="text-[#8898AA] text-xs mt-1">Start by auditing your syllabus or generating an assignment.</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="divide-y divide-[#E3E8EE]">
             {activity.map((item) => (
               <div
                 key={item.id}
-                className="flex items-start gap-3 py-2.5 border-b border-teal-900/50 last:border-0"
+                className="flex items-start gap-3 px-6 py-3.5"
               >
                 <span
-                  className={`text-xs font-semibold px-2 py-0.5 rounded border flex-shrink-0 mt-0.5 ${
-                    intentColors[item.intent] ?? 'bg-gray-800 text-gray-300 border-gray-600'
+                  className={`text-xs font-semibold px-2 py-0.5 rounded-md border flex-shrink-0 mt-0.5 ${
+                    intentColors[item.intent] ?? 'bg-[#F6F9FC] text-[#425466] border-[#E3E8EE]'
                   }`}
                 >
                   {item.intent}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-teal-200 truncate">{item.input_text?.slice(0, 80)}</p>
-                  <p className="text-xs text-teal-600 truncate mt-0.5">
+                  <p className="text-sm text-[#0A2540] truncate">{item.input_text?.slice(0, 80)}</p>
+                  <p className="text-xs text-[#8898AA] truncate mt-0.5">
                     {item.response_text?.slice(0, 60)}…
                   </p>
                 </div>
-                <span className="text-xs text-teal-600 flex-shrink-0 whitespace-nowrap">
+                <span className="text-xs text-[#8898AA] flex-shrink-0 whitespace-nowrap">
                   {formatDistanceToNow(item.created_at)}
                 </span>
               </div>
             ))}
           </div>
         )}
+      </div>
+
+      {/* Status bar */}
+      <div className="flex items-center gap-2 text-xs text-[#8898AA]">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0E9F6E] opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0E9F6E]"></span>
+        </span>
+        All systems operational
       </div>
     </div>
   );
