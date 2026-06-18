@@ -28,3 +28,15 @@ html {
     text-wrap: balance;
   }
 }
+
+/* NProgress */
+#nprogress .bar {
+  background: #635BFF !important;
+  height: 2px !important;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px #635BFF, 0 0 5px #635BFF !important;
+}
+#nprogress .spinner {
+  display: none !important;
+}

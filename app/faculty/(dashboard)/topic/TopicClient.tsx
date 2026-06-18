@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Pencil, Clock, RefreshCw, Briefcase, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { Pencil, Clock, RefreshCw, Briefcase, CheckCircle2, XCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import AILoader from '@/components/AILoader';
 
 export interface TopicUseCase {
   sector: string;
@@ -142,17 +143,12 @@ export default function TopicClient({ initialSubject }: { initialSubject: string
             >
               {loading ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Analyzing topic...
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Analyzing...
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
+                  <Pencil className="w-4 h-4" strokeWidth={1.5} />
                   Check Topic
                 </>
               )}
@@ -160,22 +156,7 @@ export default function TopicClient({ initialSubject }: { initialSubject: string
           </form>
         </div>
 
-        {loading && (
-          <div className="bg-white border border-[#E3E8EE] rounded-xl p-5 shadow-sm">
-            <p className="text-[#0A2540] text-sm font-medium mb-3">Evaluating topic relevance...</p>
-            <div className="space-y-2.5">
-              {['Checking industry demand in India', 'Reviewing 2026 job market data', 'Finding real company use cases', 'Preparing teaching guide'].map((label, i) => (
-                <div key={i} className="flex items-center gap-2.5 text-xs text-[#8898AA]">
-                  <svg className="w-3.5 h-3.5 animate-spin flex-shrink-0 text-[#635BFF]" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  {label}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {loading && <AILoader type="topic" />}
       </div>
     );
   }

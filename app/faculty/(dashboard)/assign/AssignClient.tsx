@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Pencil, Download, RefreshCw, Clock, CheckCircle2, ClipboardList, Briefcase, Lightbulb, ChevronDown } from 'lucide-react';
+import { Pencil, Download, RefreshCw, Clock, CheckCircle2, ClipboardList, Briefcase, Lightbulb, ChevronDown, Loader2 } from 'lucide-react';
+import AILoader from '@/components/AILoader';
 
 export interface AssignTask {
   number: number;
@@ -195,11 +196,8 @@ export default function AssignClient({
             >
               {loading ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  Generating assignment...
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Generating...
                 </>
               ) : (
                 <>
@@ -211,22 +209,7 @@ export default function AssignClient({
           </form>
         </div>
 
-        {loading && (
-          <div className="bg-white border border-[#E3E8EE] rounded-xl p-5 shadow-sm">
-            <p className="text-[#0A2540] text-sm font-medium mb-3">Creating your assignment...</p>
-            <div className="space-y-2.5">
-              {['Designing learning objectives', 'Creating practical tasks', 'Building evaluation rubric', 'Adding industry context'].map((label, i) => (
-                <div key={i} className="flex items-center gap-2.5 text-xs text-[#8898AA]">
-                  <svg className="w-3.5 h-3.5 animate-spin flex-shrink-0 text-[#635BFF]" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  {label}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {loading && <AILoader type="assign" />}
       </div>
     );
   }
@@ -374,10 +357,7 @@ export default function AssignClient({
           className="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-[#F6F9FC] border border-[#E3E8EE] hover:border-[#CFD7DF] text-[#0A2540] font-medium py-3 rounded-xl transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {pdfLoading ? (
-            <svg className="w-4 h-4 animate-spin text-[#635BFF]" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
+            <Loader2 className="w-4 h-4 animate-spin text-[#635BFF]" />
           ) : (
             <Download className="w-4 h-4 text-[#635BFF]" strokeWidth={1.5} />
           )}

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BookOpen, ChevronLeft, Award } from 'lucide-react';
+import AppLoader from '@/components/AppLoader';
 
 const DESIGNATIONS = [
   'Faculty',
@@ -21,6 +22,7 @@ export default function FacultyLoginPage() {
   const [designation, setDesignation] = useState('Faculty');
   const [isNewUser, setIsNewUser] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [judgeLoading, setJudgeLoading] = useState(false);
   const [error, setError] = useState('');
 
   async function handleContinue(e: React.FormEvent) {
@@ -107,6 +109,8 @@ export default function FacultyLoginPage() {
         setError(data.error ?? 'Quick access failed. Please try again.');
         return;
       }
+      setJudgeLoading(true);
+      await new Promise((r) => setTimeout(r, 2000));
       router.push('/faculty/dashboard');
     } catch {
       setError('Network error. Please try again.');
@@ -117,6 +121,10 @@ export default function FacultyLoginPage() {
 
   const inputCls =
     'w-full border border-[#E3E8EE] focus:ring-2 focus:ring-[#635BFF] focus:border-[#635BFF] rounded-lg py-2.5 px-4 text-sm bg-white text-[#0A2540] placeholder-[#8898AA] outline-none transition-all';
+
+  if (judgeLoading) {
+    return <AppLoader message="Setting up your evaluation experience..." />;
+  }
 
   return (
     <div className="min-h-screen bg-[#F6F9FC] flex items-center justify-center p-4">
