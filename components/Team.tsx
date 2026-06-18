@@ -1,114 +1,96 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { Link2, ExternalLink } from "lucide-react";
 
 const members = [
   {
     initials: "TN",
     name: "Tapan Naik",
-    role: "Product & Engineering",
-    avatarBg: "bg-[#0D9488]",
-    skills: [
-      "Solo founder, 3+ years building products",
-      "MenuBuddy — live with paying clients",
-      "Built RaveAI · InsightFlow · OdiaLipi",
-      "Stack: Next.js · Supabase · Claude API · Vercel",
-      "Google Gen AI Exchange Bootcamp alum",
-      "Can build production product solo in 7 days",
-    ],
+    role: "Builder & Engineering",
+    college: "B.Tech CSE, OUTR Rourkela",
+    bio: "Solo founder, BuddyTech Labs. 3+ years shipping SaaS products. Built FacultyMitra end-to-end.",
+    linkedin: "https://linkedin.com",
+    twitter: "https://x.com",
+    color: "bg-[#F0F0FF] text-[#635BFF]",
   },
   {
     initials: "AA",
     name: "Angel Alka Sanga",
     role: "Design & Research",
-    avatarBg: "bg-purple-600",
-    skills: [
-      "User research & problem validation",
-      "UI/UX design & visual storytelling",
-      "Owns the human side of FacultyMitra",
-      "Research: NASSCOM · FICCI · AICTE data",
-      "Bridges teacher pain and product design",
-      "Ensures the product solves real problems",
-    ],
+    college: "Co-researcher",
+    bio: "Design and user research lead. Conducted field interviews with faculty across 3 colleges.",
+    linkedin: "https://linkedin.com",
+    twitter: null,
+    color: "bg-[#FFF0F9] text-[#C026D3]",
   },
 ];
 
 export default function Team() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+
   return (
-    <section id="team" className="bg-white py-24 px-4">
-      <div className="max-w-5xl mx-auto">
+    <section id="team" ref={ref} className="py-20 md:py-28 bg-[#F6F9FC]">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-4"
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
         >
-          <span className="text-xs font-bold tracking-[0.2em] text-[#0D9488] uppercase">
-            Team BharatMinds
-          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0A2540] mb-3">
+            Meet BharatMinds.
+          </h2>
+          <p className="text-[#425466] text-lg">The team behind FacultyMitra.</p>
         </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl sm:text-4xl font-extrabold text-[#0A2E2A] mb-14 max-w-lg"
-        >
-          Two people.{" "}
-          <span className="text-[#0D9488]">One clear mission.</span>
-        </motion.h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {members.map((m, i) => (
             <motion.div
-              key={m.name}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.55, delay: i * 0.12 }}
-              whileHover={{ y: -5, boxShadow: "0 20px 60px rgba(0,0,0,0.08)" }}
-              className="rounded-2xl border border-gray-100 p-8 transition-shadow duration-300 bg-white"
+              key={i}
+              initial={{ opacity: 0, y: 24 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="bg-white border border-[#E3E8EE] rounded-2xl p-6 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
             >
-              <div className="flex items-center gap-4 mb-6">
-                <div
-                  className={`w-14 h-14 rounded-full ${m.avatarBg} flex items-center justify-center flex-shrink-0`}
-                >
-                  <span className="text-white font-extrabold text-lg">{m.initials}</span>
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-[#0A2E2A] text-xl">{m.name}</h3>
-                  <p className="text-gray-500 text-sm">{m.role}</p>
-                </div>
+              {/* Avatar */}
+              <div className={`w-14 h-14 rounded-2xl ${m.color} flex items-center justify-center text-xl font-bold mb-4`}>
+                {m.initials}
               </div>
 
-              <ul className="space-y-2.5">
-                {m.skills.map((skill) => (
-                  <li key={skill} className="flex items-start gap-3 text-sm text-gray-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0D9488] mt-1.5 flex-shrink-0" />
-                    {skill}
-                  </li>
-                ))}
-              </ul>
+              <h3 className="text-base font-bold text-[#0A2540]">{m.name}</h3>
+              <p className="text-sm font-medium text-[#635BFF] mt-0.5">{m.role}</p>
+              <p className="text-xs text-[#8898AA] mt-0.5 mb-3">{m.college}</p>
+              <p className="text-sm text-[#425466] leading-relaxed mb-4">{m.bio}</p>
+
+              {/* Social links */}
+              <div className="flex items-center gap-3">
+                <a
+                  href={m.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[#8898AA] hover:text-[#0A2540] transition-colors"
+                >
+                  <span className="text-xs">LinkedIn</span>
+                  <Link2 className="w-3 h-3" strokeWidth={1.5} />
+                </a>
+                {m.twitter && (
+                  <a
+                    href={m.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[#8898AA] hover:text-[#0A2540] transition-colors"
+                  >
+                    <span className="text-xs">X / Twitter</span>
+                    <ExternalLink className="w-3 h-3" strokeWidth={1.5} />
+                  </a>
+                )}
+              </div>
             </motion.div>
           ))}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="rounded-2xl bg-[#0A2E2A] px-8 py-7 text-center"
-        >
-          <p className="text-[#CCFBF1] text-lg sm:text-xl font-semibold leading-relaxed">
-            Tapan ships the product.{" "}
-            <span className="text-[#5EEAD4]">Angel validates the problem.</span>{" "}
-            <br className="hidden sm:block" />
-            Together — build fast, think deep, win.
-          </p>
-        </motion.div>
       </div>
     </section>
   );

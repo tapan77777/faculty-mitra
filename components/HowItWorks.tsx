@@ -1,101 +1,99 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { ArrowRight } from "lucide-react";
 
-const steps = [
+const screenshots = [
   {
-    number: "01",
-    icon: "💬",
-    title: "Teacher texts on WhatsApp",
-    description: "Any phone. Any network. Even 2G.",
+    image: "/screenshots/audit-result.png",
+    title: "Audit Your Syllabus in 30 Seconds",
+    desc: "Paste your syllabus. AI analyzes against current industry needs. Returns a relevance score, unit-by-unit verdict (KEEP / UPDATE / REMOVE), and specific suggestions with Indian industry context.",
+    link: "/faculty/audit",
+    linkText: "Try Syllabus Audit",
+    imageLeft: true,
   },
   {
-    number: "02",
-    icon: "🧠",
-    title: "AI detects intent",
-    description: "Syllabus audit · Topic check · Assignment request",
+    image: "/screenshots/industry-pulse.png",
+    title: "Stay Ahead of Industry Trends",
+    desc: "Live curated data on what skills are growing (Cloud +34%, Python +42%) and declining (MS Office -45%, Pascal -89%). Sourced from NASSCOM 2024 and India Skills Report. Updated quarterly.",
+    link: null,
+    linkText: null,
+    imageLeft: false,
   },
   {
-    number: "03",
-    icon: "🔍",
-    title: "Builds context",
-    description: "Subject · Level · Preferred language",
-  },
-  {
-    number: "04",
-    icon: "⚡",
-    title: "AI generates response",
-    description: "Relevance score · Red flags · Ready assignments",
-  },
-  {
-    number: "05",
-    icon: "📱",
-    title: "Reply sent to WhatsApp",
-    description: "Clean, readable on any screen",
+    image: "/screenshots/topic-analyzer.png",
+    title: "Decide What to Teach",
+    desc: "Faculty often wonder — \"Should I teach Blockchain? Is Web3 worth it?\" FacultyMitra gives a TEACH / SKIP / PARTIAL verdict with Indian use cases, a 1-class teaching guide, and real career data.",
+    link: "/faculty/topic",
+    linkText: "Try Topic Analyzer",
+    imageLeft: true,
   },
 ];
 
 export default function HowItWorks() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+
   return (
-    <section id="how-it-works" className="bg-[#0A2E2A] py-24 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section id="product" ref={ref} className="py-20 md:py-28 bg-[#F6F9FC]">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-4"
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
         >
-          <span className="text-xs font-bold tracking-[0.2em] text-[#5EEAD4] uppercase">
-            How It Works
-          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0A2540] mb-3">
+            See It Working.
+          </h2>
+          <p className="text-[#425466] text-lg max-w-2xl mx-auto">
+            Real screenshots from the live product. Try it yourself in 30 seconds.
+          </p>
         </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl sm:text-4xl font-extrabold text-white mb-16 max-w-xl"
-        >
-          Five steps. Zero friction.{" "}
-          <span className="text-[#5EEAD4]">Works on any phone.</span>
-        </motion.h2>
+        <div className="space-y-8">
+          {screenshots.map((s, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 28 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: i * 0.12 }}
+              className={`bg-white border border-[#E3E8EE] rounded-2xl overflow-hidden shadow-sm flex flex-col ${
+                s.imageLeft ? "md:flex-row" : "md:flex-row-reverse"
+              }`}
+            >
+              {/* Screenshot */}
+              <div className="md:w-3/5 relative bg-[#F6F9FC] border-b md:border-b-0 md:border-r border-[#E3E8EE] overflow-hidden min-h-[220px]">
+                <Image
+                  src={s.image}
+                  alt={s.title}
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                  priority={i === 0}
+                />
+              </div>
 
-        <div className="flex flex-col lg:flex-row items-stretch gap-4 lg:gap-0">
-          {steps.map((step, i) => (
-            <div key={step.number} className="flex lg:flex-col items-center lg:items-stretch flex-1">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.55, delay: i * 0.1 }}
-                whileHover={{ scale: 1.03 }}
-                className={`flex-1 rounded-2xl p-6 border transition-all ${
-                  i % 2 === 0
-                    ? "bg-[#0D9488] border-[#0D9488] text-white"
-                    : "bg-[#0A2E2A] border-[#0D9488]/30 text-[#CCFBF1]"
-                }`}
-              >
-                <div className="text-3xl mb-3">{step.icon}</div>
-                <div className="text-xs font-bold tracking-[0.15em] opacity-60 mb-2">
-                  STEP {step.number}
-                </div>
-                <div className="font-bold text-base mb-1 leading-snug">{step.title}</div>
-                <div className="text-sm opacity-70 leading-relaxed">{step.description}</div>
-              </motion.div>
-
-              {i < steps.length - 1 && (
-                <>
-                  <div className="hidden lg:flex items-center justify-center w-8 flex-shrink-0 mt-16">
-                    <span className="text-[#5EEAD4]/40 text-xl font-bold">→</span>
-                  </div>
-                  <div className="lg:hidden flex items-center justify-center h-8 w-full">
-                    <span className="text-[#5EEAD4]/40 text-xl font-bold">↓</span>
-                  </div>
-                </>
-              )}
-            </div>
+              {/* Text */}
+              <div className="md:w-2/5 p-8 flex flex-col justify-center">
+                <h3 className="text-xl font-bold tracking-tight text-[#0A2540] mb-3">
+                  {s.title}
+                </h3>
+                <p className="text-sm text-[#425466] leading-relaxed mb-5">{s.desc}</p>
+                {s.link && (
+                  <Link
+                    href={s.link}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-[#635BFF] hover:text-[#5851DB] transition-colors"
+                  >
+                    {s.linkText}
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+                  </Link>
+                )}
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>

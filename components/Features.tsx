@@ -1,118 +1,78 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { TrendingUp, Zap, MessageSquare, Users } from "lucide-react";
 
-const features = [
+const pillars = [
   {
-    number: "01",
-    title: "Syllabus Relevance Audit",
-    description:
-      "Upload or paste your syllabus. Get an instant relevance score, unit-by-unit analysis, and specific replacement suggestions.",
-    accent: "#0D9488",
-    bg: "bg-[#0D9488]/5",
-    border: "border-[#0D9488]/20",
-    bullets: [
-      "Unit-wise relevance score (0–100)",
-      "Flags obsolete topics with emoji markers",
-      "Industry-aligned replacement suggestions",
-      "Language: English, Hindi, or regional",
-    ],
+    icon: <TrendingUp className="w-6 h-6 text-[#635BFF]" strokeWidth={1.5} />,
+    title: "Industry Signals",
+    desc: "Live trending and declining skills per subject — with growth percentages, hiring companies, and source citations. Updated quarterly from NASSCOM and India Skills Report data.",
+    badge: null,
   },
   {
-    number: "02",
-    title: "Practical Assignment Generator",
-    description:
-      "Get real-world, project-based assignments tailored to the subject, semester, and skill level of your students.",
-    accent: "#7C3AED",
-    bg: "bg-purple-50",
-    border: "border-purple-200",
-    bullets: [
-      "Subject + semester aware generation",
-      "Connects theory to industry scenarios",
-      "Difficulty levels: beginner to advanced",
-      "Includes evaluation rubric & hints",
-    ],
+    icon: <Zap className="w-6 h-6 text-[#635BFF]" strokeWidth={1.5} />,
+    title: "Specific Actions",
+    desc: "AI generates assignments, audits syllabuses, and recommends what to teach — with Indian industry context, Indian company examples, and Indian salary data.",
+    badge: null,
   },
   {
-    number: "03",
-    title: "Topic Explainer & Upskill",
-    description:
-      "Ask whether a topic is worth teaching. Get a verdict, real-world use cases, and a compact teach-it-in-1-class guide.",
-    accent: "#F59E0B",
-    bg: "bg-amber-50",
-    border: "border-amber-200",
-    bullets: [
-      "Relevance verdict: teach / skip / partial",
-      "Real Indian industry use cases",
-      "1-class structured teach guide",
-      "What to skip for non-specialised courses",
-    ],
+    icon: <MessageSquare className="w-6 h-6 text-[#635BFF]" strokeWidth={1.5} />,
+    title: "Student Feedback Loops",
+    desc: "Anonymous student polls on syllabus relevance. Faculty see what students think — without awkward face-to-face conversations.",
+    badge: "Coming Phase 3",
+  },
+  {
+    icon: <Users className="w-6 h-6 text-[#635BFF]" strokeWidth={1.5} />,
+    title: "Peer Faculty Network",
+    desc: "Connect with other faculty teaching the same subject across India. Share what's working. Stay updated together.",
+    badge: "Coming Phase 3",
   },
 ];
 
 export default function Features() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+
   return (
-    <section id="features" className="bg-[#F0FDFB] py-24 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section id="features" ref={ref} className="py-20 md:py-28 bg-white">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-4"
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-14"
         >
-          <span className="text-xs font-bold tracking-[0.2em] text-[#0D9488] uppercase">
-            3 Core Features
-          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0A2540] mb-3">
+            Four Pillars. One Workflow.
+          </h2>
+          <p className="text-[#425466] text-lg max-w-2xl mx-auto">
+            FacultyMitra is not just AI chat. It&apos;s a complete teaching support system.
+          </p>
         </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl sm:text-4xl font-extrabold text-[#0A2E2A] mb-14 max-w-xl"
-        >
-          Everything a faculty needs.{" "}
-          <span className="text-[#0D9488]">Nothing they don&apos;t.</span>
-        </motion.h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {features.map((f, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {pillars.map((p, i) => (
             <motion.div
-              key={f.number}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.55, delay: i * 0.12 }}
-              whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(0,0,0,0.08)" }}
-              className={`rounded-2xl p-8 border-2 ${f.bg} ${f.border} transition-shadow duration-300`}
+              key={i}
+              initial={{ opacity: 0, y: 24 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="bg-white border border-[#E3E8EE] rounded-2xl p-8 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 relative"
             >
-              <div
-                className="inline-flex items-center justify-center w-12 h-12 rounded-xl text-white font-extrabold text-lg mb-5"
-                style={{ backgroundColor: f.accent }}
-              >
-                {f.number}
+              <div className="w-12 h-12 rounded-xl bg-[#F0F0FF] flex items-center justify-center mb-5">
+                {p.icon}
               </div>
-
-              <h3 className="font-extrabold text-[#0A2E2A] text-xl mb-3 leading-tight">
-                {f.title}
-              </h3>
-              <p className="text-gray-600 text-sm leading-relaxed mb-5">
-                {f.description}
-              </p>
-
-              <ul className="space-y-2.5">
-                {f.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2.5 text-sm text-gray-700">
-                    <span
-                      className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
-                      style={{ backgroundColor: f.accent }}
-                    />
-                    {b}
-                  </li>
-                ))}
-              </ul>
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <h3 className="text-base font-semibold text-[#0A2540]">{p.title}</h3>
+                {p.badge && (
+                  <span className="flex-shrink-0 text-xs font-medium text-[#8898AA] bg-[#F6F9FC] border border-[#E3E8EE] px-2 py-0.5 rounded-md">
+                    {p.badge}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-[#425466] leading-relaxed">{p.desc}</p>
             </motion.div>
           ))}
         </div>

@@ -1,32 +1,51 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
+import { BookOpen } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#051F1C] border-t border-white/5 py-10 px-4">
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.7 }}
-        viewport={{ once: true }}
-        className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm"
-      >
-        <span className="text-xl font-bold text-[#0D9488]">FacultyMitra</span>
+    <footer className="bg-white border-t border-[#E3E8EE] py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+          {/* Brand */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#635BFF] flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-white" strokeWidth={2} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#0A2540]">FacultyMitra</p>
+              <p className="text-xs text-[#8898AA]">AI Co-Pilot for Indian Faculty</p>
+            </div>
+          </div>
 
-        <span className="text-gray-500 text-center">
-          Team BharatMinds · Wadhwani AI Hackathon 2026 · Track 3.4
-        </span>
+          {/* Links */}
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#425466]">
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#0A2540] transition-colors"
+            >
+              GitHub
+            </a>
+            <Link href="#" className="hover:text-[#0A2540] transition-colors">Privacy</Link>
+            <Link href="#" className="hover:text-[#0A2540] transition-colors">Terms</Link>
+            <a href="mailto:hello@facultymitra.com" className="hover:text-[#0A2540] transition-colors">
+              Contact
+            </a>
+          </div>
+        </div>
 
-        <a
-          href="https://x.com/tapan_ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#5EEAD4] hover:text-[#0D9488] transition-colors font-medium"
-        >
-          @tapan_ai
-        </a>
-      </motion.div>
+        <div className="mt-8 pt-6 border-t border-[#E3E8EE] space-y-1">
+          <p className="text-xs text-[#8898AA]">
+            © 2026 BharatMinds. Built for Wadhwani AI&apos;s SahAI for Shiksha Hackathon 2026.
+          </p>
+          <p className="text-xs text-[#8898AA]">
+            FacultyMitra is a Phase 2 MVP. Production features marked &apos;Coming Phase 3&apos; are not yet built.
+          </p>
+        </div>
+      </div>
     </footer>
   );
 }
