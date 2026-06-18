@@ -26,6 +26,8 @@ export async function POST(request: Request) {
     .eq('phone_hash', phoneHash)
     .single();
 
+  const isJudge = phone === '0000000001';
+
   if (!existing) {
     const college = body.college?.trim() ?? '';
     const designation = body.designation?.trim() || 'Faculty';
@@ -35,9 +37,9 @@ export async function POST(request: Request) {
       name,
       college,
       designation,
-      subject: '',
+      subject: isJudge ? 'Computer Science' : '',
       language: 'English',
-      is_verified: false,
+      is_verified: isJudge,
       last_active: new Date().toISOString(),
       message_count: 0,
     });
@@ -45,6 +47,12 @@ export async function POST(request: Request) {
     if (error) {
       return NextResponse.json({ error: 'Account creation failed' }, { status: 500 });
     }
+  } else if (isJudge) {
+    // Ensure judge account stays verified and has subject set on every login
+    await supabase
+      .from('faculty_profiles')
+      .update({ is_verified: true, subject: 'Computer Science' })
+      .eq('phone_hash', phoneHash);
   }
 
   cookies().set('faculty_session', phoneHash, {

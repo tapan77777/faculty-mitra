@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, ChevronLeft } from 'lucide-react';
+import { BookOpen, ChevronLeft, Award } from 'lucide-react';
 
 const DESIGNATIONS = [
   'Faculty',
@@ -78,6 +78,33 @@ export default function FacultyLoginPage() {
       const data = await res.json() as { success?: boolean; error?: string };
       if (!res.ok) {
         setError(data.error ?? 'Login failed. Please try again.');
+        return;
+      }
+      router.push('/faculty/dashboard');
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleJudgeLogin() {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/faculty/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: '0000000001',
+          name: 'Wadhwani Evaluator',
+          college: 'Wadhwani AI',
+          designation: 'Evaluator / Judge',
+        }),
+      });
+      const data = await res.json() as { success?: boolean; error?: string };
+      if (!res.ok) {
+        setError(data.error ?? 'Quick access failed. Please try again.');
         return;
       }
       router.push('/faculty/dashboard');
@@ -201,6 +228,29 @@ export default function FacultyLoginPage() {
               </form>
             </>
           )}
+        </div>
+
+        {/* Quick Judge Access */}
+        <div className="mt-4">
+          {/* OR divider */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px bg-[#E3E8EE]" />
+            <span className="text-xs text-[#8898AA] font-medium">OR</span>
+            <div className="flex-1 h-px bg-[#E3E8EE]" />
+          </div>
+
+          <div className="bg-white rounded-2xl border border-[#635BFF]/20 p-5 text-center">
+            <p className="text-sm font-semibold text-[#0A2540] mb-0.5">Hackathon Evaluator?</p>
+            <p className="text-xs text-[#8898AA] mb-4">Quick access for Wadhwani AI judges</p>
+            <button
+              onClick={handleJudgeLogin}
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center gap-2 border border-[#635BFF] text-[#635BFF] hover:bg-[#F0F0FF] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm py-2.5 rounded-lg transition-colors"
+            >
+              <Award className="w-4 h-4" strokeWidth={1.5} />
+              {loading ? 'Signing in...' : 'Quick Judge Access →'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -58,6 +58,11 @@ export default async function FacultyPage() {
                           {f.name?.charAt(0)?.toUpperCase() ?? '?'}
                         </div>
                         <span className="text-[#0A2540] font-medium">{f.name}</span>
+                        {f.designation === 'Evaluator / Judge' && (
+                          <span className="text-xs font-semibold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-md">
+                            JUDGE
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-[#425466]">{f.college || '—'}</td>
