@@ -9,6 +9,7 @@ export interface ActivityItem {
   created_at: string;
   faculty_name: string | null;
   faculty_college: string | null;
+  faculty_is_verified: boolean;
 }
 
 export interface FacultyRow {
@@ -17,6 +18,8 @@ export interface FacultyRow {
   college: string;
   subject: string;
   language: string;
+  designation: string;
+  is_verified: boolean;
   message_count: number;
   last_active: string;
   created_at: string;
@@ -103,7 +106,7 @@ export async function getRecentActivity(limit = 10): Promise<ActivityItem[]> {
   const facultyIds = Array.from(new Set(logs.map((l) => l.faculty_id)));
   const { data: faculty } = await supabase
     .from('faculty_profiles')
-    .select('id, name, college')
+    .select('id, name, college, is_verified')
     .in('id', facultyIds);
 
   const facultyMap = new Map(Array.from((faculty ?? []).map((f) => [f.id, f] as [string, typeof f])));
@@ -112,6 +115,7 @@ export async function getRecentActivity(limit = 10): Promise<ActivityItem[]> {
     ...log,
     faculty_name: facultyMap.get(log.faculty_id)?.name ?? null,
     faculty_college: facultyMap.get(log.faculty_id)?.college ?? null,
+    faculty_is_verified: facultyMap.get(log.faculty_id)?.is_verified ?? false,
   }));
 }
 

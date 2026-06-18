@@ -12,6 +12,8 @@ export interface FacultyProfile {
   college: string;
   subject: string;
   language: string;
+  designation: string;
+  is_verified: boolean;
   created_at: string;
   last_active: string;
   message_count: number;

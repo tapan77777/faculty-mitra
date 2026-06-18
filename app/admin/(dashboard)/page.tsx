@@ -126,12 +126,22 @@ export default async function OverviewPage() {
                     {item.intent}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-white font-medium truncate">
-                      {item.faculty_name ?? 'Unknown'}
-                      {item.faculty_college && (
-                        <span className="text-teal-500 font-normal"> · {item.faculty_college}</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="text-sm text-white font-medium truncate">
+                        {item.faculty_name ?? 'Unknown'}
+                        {item.faculty_college && (
+                          <span className="text-teal-500 font-normal"> · {item.faculty_college}</span>
+                        )}
+                      </p>
+                      {item.faculty_is_verified && (
+                        <span title="Verified Faculty" className="flex-shrink-0 flex items-center gap-0.5 text-xs font-semibold text-green-400 bg-green-900/30 border border-green-800 px-1.5 py-0.5 rounded-full">
+                          <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                          ✓
+                        </span>
                       )}
-                    </p>
+                    </div>
                     <p className="text-xs text-teal-600 truncate">{item.input_text?.slice(0, 60)}…</p>
                   </div>
                   <span className="text-xs text-teal-600 flex-shrink-0">

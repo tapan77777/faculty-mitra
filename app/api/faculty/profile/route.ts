@@ -16,18 +16,20 @@ export async function POST(request: Request) {
     college?: string;
     subject?: string;
     language?: string;
+    designation?: string;
   };
 
   const name = body.name?.trim();
   const college = body.college?.trim() ?? '';
   const subject = body.subject?.trim() ?? '';
   const language = body.language?.trim() ?? 'English';
+  const designation = body.designation?.trim() || 'Faculty';
 
   if (!name) return NextResponse.json({ error: 'Name is required' }, { status: 400 });
 
   const { error } = await supabase
     .from('faculty_profiles')
-    .update({ name, college, subject, language })
+    .update({ name, college, subject, language, designation })
     .eq('id', faculty.id);
 
   if (error) return NextResponse.json({ error: 'Update failed' }, { status: 500 });

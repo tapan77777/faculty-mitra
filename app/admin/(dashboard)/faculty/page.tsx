@@ -1,5 +1,6 @@
 import { getAllFaculty } from '@/lib/admin-data';
 import { formatDistanceToNow, formatDate } from '@/lib/time-utils';
+import VerifyButton from './VerifyButton';
 
 const languageLabels: Record<string, string> = {
   en: 'English',
@@ -34,8 +35,10 @@ export default async function FacultyPage() {
                   <th className="text-left px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">#</th>
                   <th className="text-left px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Name</th>
                   <th className="text-left px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">College</th>
+                  <th className="text-left px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Designation</th>
                   <th className="text-left px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Subject</th>
                   <th className="text-left px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Language</th>
+                  <th className="text-left px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Status</th>
                   <th className="text-right px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Messages</th>
                   <th className="text-right px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Joined</th>
                   <th className="text-right px-6 py-3.5 text-xs font-semibold text-teal-500 uppercase tracking-wider">Last Active</th>
@@ -56,12 +59,28 @@ export default async function FacultyPage() {
                         <span className="text-white font-medium">{f.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-teal-300">{f.college}</td>
-                    <td className="px-6 py-4 text-teal-400">{f.subject}</td>
+                    <td className="px-6 py-4 text-teal-300">{f.college || '—'}</td>
+                    <td className="px-6 py-4 text-teal-400 text-xs">{f.designation || 'Faculty'}</td>
+                    <td className="px-6 py-4 text-teal-400">{f.subject || '—'}</td>
                     <td className="px-6 py-4">
                       <span className="text-xs bg-teal-900/50 text-teal-300 border border-teal-800 px-2 py-0.5 rounded">
                         {languageLabels[f.language] ?? f.language}
                       </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      {f.is_verified ? (
+                        <span className="flex items-center gap-1 text-xs font-semibold text-green-300 bg-green-900/30 border border-green-700 px-2.5 py-1 rounded-full w-fit">
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Verified
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-teal-600">Unverified</span>
+                          <VerifyButton facultyId={f.id} />
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <span className="text-white font-bold">{f.message_count ?? 0}</span>

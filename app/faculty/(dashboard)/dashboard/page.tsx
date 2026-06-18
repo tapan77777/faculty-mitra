@@ -224,11 +224,22 @@ export default async function FacultyDashboardPage() {
     <div className="space-y-6 max-w-5xl">
       {/* Welcome card */}
       <div className="bg-gradient-to-r from-teal-900/40 to-teal-900/10 border border-teal-800 rounded-2xl p-6">
-        <h2 className="text-xl font-bold text-white">
-          Hi {faculty.name.split(' ')[0]}, here&apos;s your dashboard
-        </h2>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <h2 className="text-xl font-bold text-white">
+            Hi {faculty.name.split(' ')[0]}, here&apos;s your dashboard
+          </h2>
+          {faculty.is_verified && (
+            <span className="flex items-center gap-1 text-xs font-semibold text-green-300 bg-green-900/30 border border-green-700 px-2.5 py-0.5 rounded-full">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+              Verified
+            </span>
+          )}
+        </div>
         <p className="text-teal-400 text-sm mt-1">
           {faculty.college ? `${faculty.college} · ` : ''}
+          {faculty.designation ? `${faculty.designation} · ` : ''}
           {faculty.subject || 'Faculty Portal'}
         </p>
       </div>

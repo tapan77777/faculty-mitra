@@ -16,6 +16,8 @@ export default async function ProfilePage() {
         college: faculty.college,
         subject: faculty.subject,
         language: faculty.language,
+        designation: faculty.designation ?? 'Faculty',
+        is_verified: faculty.is_verified ?? false,
         phone_hash: faculty.phone_hash,
       }}
     />
