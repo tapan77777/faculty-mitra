@@ -1,6 +1,6 @@
 'use client';
 
-import { TrendingUp, AlertTriangle } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 
 export interface AuditUnit {
   name: string;

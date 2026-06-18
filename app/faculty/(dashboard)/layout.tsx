@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getFacultyByPhoneHash } from '@/lib/faculty-data';
 import { facultyLogoutAction } from '../login/actions';
-import { Home, ClipboardList, Pencil, BookOpen, Clock, User, LogOut } from 'lucide-react';
+import { Home, ClipboardList, Pencil, BookOpen, Clock, LogOut } from 'lucide-react';
 
 const navLinks = [
   { href: '/faculty/dashboard', label: 'Dashboard', icon: <Home className="w-4 h-4" strokeWidth={1.5} /> },
