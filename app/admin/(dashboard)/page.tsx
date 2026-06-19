@@ -5,9 +5,10 @@ import {
   getActiveToday,
   getFeatureBreakdown,
   getRecentActivity,
+  getJudges,
 } from '@/lib/admin-data';
 import { formatDistanceToNow } from '@/lib/time-utils';
-import { Users, MessageSquare, Trophy, Zap, CheckCircle2 } from 'lucide-react';
+import { Users, MessageSquare, Trophy, Zap, CheckCircle2, Award } from 'lucide-react';
 
 const intentColors: Record<string, string> = {
   AUDIT:  'bg-blue-50 text-blue-700 border-blue-200',
@@ -22,13 +23,14 @@ const intentBarColors: Record<string, string> = {
 };
 
 export default async function OverviewPage() {
-  const [total, messages, topFeature, activeToday, breakdown, activity] = await Promise.all([
+  const [total, messages, topFeature, activeToday, breakdown, activity, judges] = await Promise.all([
     getTotalFaculty(),
     getTotalMessages(),
     getMostUsedFeature(),
     getActiveToday(),
     getFeatureBreakdown(),
     getRecentActivity(10),
+    getJudges(),
   ]);
 
   const maxCount = Math.max(breakdown.AUDIT, breakdown.ASSIGN, breakdown.TOPIC, 1);
@@ -130,6 +132,42 @@ export default async function OverviewPage() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Judge Sessions */}
+      <div className="bg-white border border-purple-200 rounded-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-purple-100 bg-purple-50/60 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Award className="w-4 h-4 text-purple-600" strokeWidth={1.5} />
+            <h3 className="text-base font-semibold text-[#0A2540]">Judge Sessions</h3>
+          </div>
+          <span className="text-xs font-semibold text-purple-700 bg-purple-100 border border-purple-200 px-2.5 py-1 rounded-full">
+            {judges.length} {judges.length === 1 ? 'judge' : 'judges'}
+          </span>
+        </div>
+        {judges.length === 0 ? (
+          <p className="px-6 py-8 text-[#425466] text-sm">No judges logged in yet.</p>
+        ) : (
+          <div className="divide-y divide-[#E3E8EE]">
+            {judges.map((j) => (
+              <div key={j.id} className="px-6 py-3.5 flex items-center justify-between hover:bg-purple-50/30 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-xs font-bold text-purple-700 flex-shrink-0">
+                    {j.name?.charAt(0)?.toUpperCase() ?? '?'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#0A2540]">{j.name}</p>
+                    <p className="text-xs text-[#8898AA]">{j.college || '—'}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-[#8898AA]">{j.last_active ? formatDistanceToNow(j.last_active) : '—'}</p>
+                  <p className="text-xs font-semibold text-purple-700">{j.message_count ?? 0} msgs</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Faculty table */}

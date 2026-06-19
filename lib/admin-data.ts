@@ -127,6 +127,42 @@ export async function getAllFaculty(): Promise<FacultyRow[]> {
   return (data as FacultyRow[]) ?? [];
 }
 
+export interface Judge {
+  id: string;
+  name: string;
+  college: string;
+  last_active: string | null;
+  message_count: number;
+}
+
+export async function getJudges(): Promise<Judge[]> {
+  const { data } = await supabase
+    .from('faculty_profiles')
+    .select('id, name, college, last_active, message_count')
+    .eq('designation', 'Evaluator / Judge')
+    .order('last_active', { ascending: false });
+  return (data as Judge[]) ?? [];
+}
+
+export interface FacultyLog {
+  id: string;
+  faculty_id: string;
+  intent: string;
+  input_text: string;
+  response_text: string;
+  created_at: string;
+}
+
+export async function getFacultyLogs(facultyId: string): Promise<FacultyLog[]> {
+  const { data } = await supabase
+    .from('message_logs')
+    .select('*')
+    .eq('faculty_id', facultyId)
+    .in('intent', ['AUDIT_WEB', 'ASSIGN_WEB', 'TOPIC_WEB'])
+    .order('created_at', { ascending: false });
+  return (data as FacultyLog[]) ?? [];
+}
+
 const PAGE_SIZE = 20;
 
 export async function getAllConversations(
