@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getFacultyByPhoneHash } from '@/lib/faculty-data';
 import { facultyLogoutAction } from '../login/actions';

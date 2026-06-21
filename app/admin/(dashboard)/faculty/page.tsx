@@ -8,8 +8,6 @@ import EditFacultyModal from './EditFacultyModal';
 import DeleteFacultyButton from './DeleteFacultyButton';
 import { CheckCircle2, Pencil, Eye, Search, X } from 'lucide-react';
 
-const languageLabels: Record<string, string> = { en: 'English', hi: 'Hindi' };
-
 const FILTERS = ['All', 'Verified', 'Unverified', 'Judges', 'Faculty', 'Trainers'] as const;
 type Filter = typeof FILTERS[number];
 
@@ -74,12 +72,6 @@ export default function FacultyPage() {
 
     return list;
   }, [faculty, filter, search]);
-
-  function activityLabel(a: ActivityBreakdown) {
-    const total = a.audits + a.assignments + a.topics;
-    if (total === 0) return '—';
-    return `${a.audits}a · ${a.assignments}as · ${a.topics}t`;
-  }
 
   if (loading) {
     return (
