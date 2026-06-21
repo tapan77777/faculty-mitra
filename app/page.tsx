@@ -7,6 +7,7 @@ import WhyWhatsApp from "@/components/WhyWhatsApp";
 import Sources from "@/components/Sources";
 import TechStack from "@/components/TechStack";
 import Team from "@/components/Team";
+import Testimonials from "@/components/Testimonials";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
@@ -22,6 +23,7 @@ export default function Home() {
       <Sources />
       <TechStack />
       <Team />
+      <Testimonials />
       <FinalCTA />
       <Footer />
     </main>
