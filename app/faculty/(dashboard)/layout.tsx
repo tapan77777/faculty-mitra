@@ -2,15 +2,8 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getFacultyByPhoneHash } from '@/lib/faculty-data';
 import { facultyLogoutAction } from '../login/actions';
-import { Home, ClipboardList, Pencil, BookOpen, Clock, LogOut } from 'lucide-react';
-
-const navLinks = [
-  { href: '/faculty/dashboard', label: 'Dashboard', icon: <Home className="w-4 h-4" strokeWidth={1.5} /> },
-  { href: '/faculty/audit',     label: 'Audit',     icon: <ClipboardList className="w-4 h-4" strokeWidth={1.5} /> },
-  { href: '/faculty/assign',    label: 'Assign',    icon: <Pencil className="w-4 h-4" strokeWidth={1.5} /> },
-  { href: '/faculty/topic',     label: 'Topic',     icon: <BookOpen className="w-4 h-4" strokeWidth={1.5} /> },
-  { href: '/faculty/history',   label: 'History',   icon: <Clock className="w-4 h-4" strokeWidth={1.5} /> },
-];
+import { BookOpen, LogOut } from 'lucide-react';
+import { SidebarNav, BottomNav } from './SidebarNav';
 
 export default async function FacultyDashboardLayout({
   children,
@@ -38,21 +31,7 @@ export default async function FacultyDashboardLayout({
           </div>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#425466] text-sm hover:bg-[#F6F9FC] hover:text-[#0A2540] transition-colors font-medium group"
-            >
-              <span className="text-[#8898AA] group-hover:text-[#635BFF] transition-colors">
-                {link.icon}
-              </span>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <SidebarNav />
 
         {/* User info + Logout */}
         <div className="px-3 py-4 border-t border-[#E3E8EE]">
@@ -105,19 +84,7 @@ export default async function FacultyDashboardLayout({
         </main>
       </div>
 
-      {/* Mobile bottom nav */}
-      <nav className="bg-white border-t border-[#E3E8EE] fixed bottom-0 left-0 right-0 flex md:hidden z-50">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="flex-1 flex flex-col items-center gap-0.5 py-2.5 text-[#8898AA] hover:text-[#635BFF] transition-colors"
-          >
-            <span>{link.icon}</span>
-            <span className="text-[10px] font-medium">{link.label}</span>
-          </Link>
-        ))}
-      </nav>
+      <BottomNav />
     </div>
   );
 }

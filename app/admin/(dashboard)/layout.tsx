@@ -1,12 +1,6 @@
-import Link from 'next/link';
 import { logoutAction } from '../login/actions';
-import { Home, Users, MessageSquare, Monitor, LogOut } from 'lucide-react';
-
-const navLinks = [
-  { href: '/admin',               label: 'Overview',      icon: <Home className="w-4 h-4" strokeWidth={1.5} /> },
-  { href: '/admin/faculty',       label: 'Faculty',       icon: <Users className="w-4 h-4" strokeWidth={1.5} /> },
-  { href: '/admin/conversations', label: 'Conversations', icon: <MessageSquare className="w-4 h-4" strokeWidth={1.5} /> },
-];
+import { Monitor, LogOut } from 'lucide-react';
+import SidebarNav from './SidebarNav';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -26,21 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-[#425466] hover:bg-[#F6F9FC] hover:text-[#0A2540] transition-colors text-sm font-medium group"
-            >
-              <span className="text-[#8898AA] group-hover:text-[#635BFF] transition-colors">
-                {link.icon}
-              </span>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <SidebarNav />
 
         {/* Logout */}
         <div className="px-3 py-4 border-t border-[#E3E8EE]">
