@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { AnimatePresence } from 'framer-motion';
 import { Pencil, Clock, RefreshCw, Briefcase, CheckCircle2, XCircle, AlertTriangle, Loader2 } from 'lucide-react';
-import AILoader from '@/components/AILoader';
+import AIThinkingLoader from '@/components/ui/AIThinkingLoader';
 
 export interface TopicUseCase {
   sector: string;
@@ -54,6 +55,8 @@ export default function TopicClient({ initialSubject }: { initialSubject: string
   const [topic, setTopic] = useState('');
   const [subject, setSubject] = useState(initialSubject);
   const [loading, setLoading] = useState(false);
+  const [loaderDone, setLoaderDone] = useState(false);
+  const [pendingResult, setPendingResult] = useState<TopicResult | null>(null);
   const [result, setResult] = useState<TopicResult | null>(null);
   const [error, setError] = useState('');
 
@@ -61,7 +64,10 @@ export default function TopicClient({ initialSubject }: { initialSubject: string
     e.preventDefault();
     if (!topic.trim()) return;
     setLoading(true);
+    setLoaderDone(false);
+    setPendingResult(null);
     setError('');
+    let success = false;
     try {
       const res = await fetch('/api/faculty/topic', {
         method: 'POST',
@@ -73,13 +79,21 @@ export default function TopicClient({ initialSubject }: { initialSubject: string
         setError(data.error ?? 'Analysis failed. Please try again.');
         return;
       }
-      setResult(data);
-      setStep(2);
+      setPendingResult(data);
+      setLoaderDone(true);
+      success = true;
     } catch {
       setError('Network error. Please try again.');
     } finally {
-      setLoading(false);
+      if (!success) setLoading(false);
     }
+  }
+
+  function handleLoaderComplete() {
+    if (pendingResult) { setResult(pendingResult); setStep(2); }
+    setLoading(false);
+    setLoaderDone(false);
+    setPendingResult(null);
   }
 
   function handleReset() {
@@ -156,7 +170,16 @@ export default function TopicClient({ initialSubject }: { initialSubject: string
           </form>
         </div>
 
-        {loading && <AILoader type="topic" />}
+        <AnimatePresence>
+          {loading && (
+            <AIThinkingLoader
+              feature="topic"
+              estimatedSeconds={6}
+              done={loaderDone}
+              onComplete={handleLoaderComplete}
+            />
+          )}
+        </AnimatePresence>
       </div>
     );
   }

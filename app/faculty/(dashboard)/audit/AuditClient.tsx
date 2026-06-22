@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { AnimatePresence } from 'framer-motion';
 import AuditResultsView from './AuditResultsView';
 import { ClipboardList, Download, RefreshCw, Pencil, Loader2 } from 'lucide-react';
-import AILoader from '@/components/AILoader';
+import AIThinkingLoader from '@/components/ui/AIThinkingLoader';
 
 export type { AuditUnit, AuditResult } from './AuditResultsView';
 import type { AuditResult } from './AuditResultsView';
@@ -37,6 +38,8 @@ export default function AuditClient({ initialSubject }: { initialSubject: string
   const [subject, setSubject] = useState(initialSubject);
   const [semester, setSemester] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loaderDone, setLoaderDone] = useState(false);
+  const [pendingResult, setPendingResult] = useState<AuditResult | null>(null);
   const [result, setResult] = useState<AuditResult | null>(null);
   const [error, setError] = useState('');
   const [pdfLoading, setPdfLoading] = useState(false);
@@ -45,8 +48,11 @@ export default function AuditClient({ initialSubject }: { initialSubject: string
     e.preventDefault();
     if (!syllabus.trim()) return;
     setLoading(true);
+    setLoaderDone(false);
+    setPendingResult(null);
     setError('');
 
+    let success = false;
     try {
       const res = await fetch('/api/faculty/audit', {
         method: 'POST',
@@ -58,13 +64,21 @@ export default function AuditClient({ initialSubject }: { initialSubject: string
         setError(data.error ?? 'Analysis failed. Please try again.');
         return;
       }
-      setResult(data);
-      setStep(2);
+      setPendingResult(data);
+      setLoaderDone(true);
+      success = true;
     } catch {
       setError('Network error. Please try again.');
     } finally {
-      setLoading(false);
+      if (!success) setLoading(false);
     }
+  }
+
+  function handleLoaderComplete() {
+    if (pendingResult) { setResult(pendingResult); setStep(2); }
+    setLoading(false);
+    setLoaderDone(false);
+    setPendingResult(null);
   }
 
   async function handleDownloadPdf() {
@@ -192,7 +206,16 @@ export default function AuditClient({ initialSubject }: { initialSubject: string
           </form>
         </div>
 
-        {loading && <AILoader type="audit" />}
+        <AnimatePresence>
+          {loading && (
+            <AIThinkingLoader
+              feature="audit"
+              estimatedSeconds={12}
+              done={loaderDone}
+              onComplete={handleLoaderComplete}
+            />
+          )}
+        </AnimatePresence>
       </div>
     );
   }

@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { AnimatePresence } from 'framer-motion';
 import { Pencil, Download, RefreshCw, Clock, CheckCircle2, ClipboardList, Briefcase, Lightbulb, ChevronDown, Loader2 } from 'lucide-react';
-import AILoader from '@/components/AILoader';
+import AIThinkingLoader from '@/components/ui/AIThinkingLoader';
 
 export interface AssignTask {
   number: number;
@@ -43,6 +44,8 @@ export default function AssignClient({
   const [difficulty, setDifficulty] = useState<'Beginner' | 'Intermediate' | 'Advanced'>('Intermediate');
   const [hours, setHours] = useState('3');
   const [loading, setLoading] = useState(false);
+  const [loaderDone, setLoaderDone] = useState(false);
+  const [pendingResult, setPendingResult] = useState<AssignResult | null>(null);
   const [result, setResult] = useState<AssignResult | null>(null);
   const [error, setError] = useState('');
   const [pdfLoading, setPdfLoading] = useState(false);
@@ -52,7 +55,10 @@ export default function AssignClient({
     e.preventDefault();
     if (!topic.trim()) return;
     setLoading(true);
+    setLoaderDone(false);
+    setPendingResult(null);
     setError('');
+    let success = false;
     try {
       const res = await fetch('/api/faculty/assign', {
         method: 'POST',
@@ -64,13 +70,21 @@ export default function AssignClient({
         setError(data.error ?? 'Generation failed. Please try again.');
         return;
       }
-      setResult(data);
-      setStep(2);
+      setPendingResult(data);
+      setLoaderDone(true);
+      success = true;
     } catch {
       setError('Network error. Please try again.');
     } finally {
-      setLoading(false);
+      if (!success) setLoading(false);
     }
+  }
+
+  function handleLoaderComplete() {
+    if (pendingResult) { setResult(pendingResult); setStep(2); }
+    setLoading(false);
+    setLoaderDone(false);
+    setPendingResult(null);
   }
 
   async function handleDownloadPdf() {
@@ -209,7 +223,16 @@ export default function AssignClient({
           </form>
         </div>
 
-        {loading && <AILoader type="assign" />}
+        <AnimatePresence>
+          {loading && (
+            <AIThinkingLoader
+              feature="assign"
+              estimatedSeconds={8}
+              done={loaderDone}
+              onComplete={handleLoaderComplete}
+            />
+          )}
+        </AnimatePresence>
       </div>
     );
   }
