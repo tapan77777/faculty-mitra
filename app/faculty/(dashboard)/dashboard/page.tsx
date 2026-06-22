@@ -13,36 +13,20 @@ import {
 function IndustryPulsePanel({
   pulse,
   subject,
+  isDefault = false,
+  isJudge = false,
 }: {
   pulse: IndustryPulse | null;
   subject: string;
+  isDefault?: boolean;
+  isJudge?: boolean;
 }) {
-  if (!subject?.trim()) {
-    return (
-      <div className="bg-white border border-[#E3E8EE] rounded-2xl p-6 flex items-center justify-between gap-4">
-        <div>
-          <p className="text-[#0A2540] font-semibold text-sm flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-[#635BFF]" strokeWidth={1.5} />
-            Industry Pulse
-          </p>
-          <p className="text-[#8898AA] text-xs mt-1">Add your subject in profile to see live industry trends</p>
-        </div>
-        <Link
-          href="/faculty/profile"
-          className="flex-shrink-0 text-xs bg-[#635BFF] hover:bg-[#5851DB] text-white px-4 py-2 rounded-lg font-medium transition-colors"
-        >
-          Update Profile
-        </Link>
-      </div>
-    );
-  }
-
   if (!pulse) {
     return (
       <div className="bg-white border border-[#E3E8EE] rounded-2xl p-6 space-y-2">
         <p className="text-[#0A2540] font-semibold text-sm flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-[#635BFF]" strokeWidth={1.5} />
-          Industry Pulse for <span className="text-[#635BFF]">{subject}</span> — Coming Soon
+          Industry Pulse for <span className="text-[#635BFF]">{subject || 'your subject'}</span> — Coming Soon
         </p>
         <p className="text-[#425466] text-xs leading-relaxed">
           Currently live for: Computer Science (BCA / MCA / CSE), Electronics &amp; Communication (ECE),
@@ -78,6 +62,30 @@ function IndustryPulsePanel({
           Updated {updatedDate}
         </span>
       </div>
+
+      {/* Contextual banner — default or judge */}
+      {isJudge && (
+        <div className="px-6 py-2 bg-purple-50 border-b border-purple-100 flex items-center gap-2">
+          <span className="text-xs text-purple-700 font-medium">
+            👨‍⚖️ Judge View — Sample data for demonstration
+          </span>
+        </div>
+      )}
+      {isDefault && !isJudge && (
+        <div className="px-6 py-2 bg-indigo-50/60 border-b border-indigo-100 flex items-center justify-between gap-3">
+          <p className="text-xs text-slate-500">
+            Showing trends for{' '}
+            <span className="font-medium text-indigo-600">Computer Science</span>{' '}
+            <span className="text-slate-400">(default)</span>
+          </p>
+          <Link
+            href="/faculty/profile"
+            className="text-xs text-indigo-600 hover:text-indigo-700 font-medium transition-colors whitespace-nowrap flex-shrink-0"
+          >
+            Personalize →
+          </Link>
+        </div>
+      )}
 
       {/* Skills columns */}
       <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E3E8EE] p-5 gap-5 sm:gap-0">
@@ -148,6 +156,19 @@ function IndustryPulsePanel({
           <p className="text-xs text-[#8898AA]">Source: {pulse.source_citation}</p>
         </div>
       )}
+
+      {/* Update Profile CTA — only for default (non-judge) users */}
+      {isDefault && !isJudge && (
+        <div className="px-5 pb-5 border-t border-[#E3E8EE] pt-4 flex items-center justify-between gap-3">
+          <p className="text-xs text-[#8898AA]">Set your subject to see personalized trends.</p>
+          <Link
+            href="/faculty/profile"
+            className="text-xs font-medium text-[#635BFF] border border-[#635BFF]/30 hover:border-[#635BFF] hover:bg-[#F0F0FF] px-3.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+          >
+            Update Profile
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
@@ -190,11 +211,19 @@ export default async function FacultyDashboardPage() {
   const faculty = phoneHash ? await getFacultyByPhoneHash(phoneHash) : null;
   if (!faculty) return null;
 
-  const [stats, activity, pulse] = await Promise.all([
+  const isJudge = faculty.designation === 'Evaluator / Judge';
+  const subjectForPulse = faculty.subject?.trim() || 'Computer Science';
+  const isDefault = !faculty.subject?.trim();
+
+  const [stats, activity, rawPulse] = await Promise.all([
     getFacultyStats(faculty.id),
     getFacultyRecentActivity(faculty.id, 8),
-    faculty.subject ? getIndustryPulse(faculty.subject) : Promise.resolve(null),
+    getIndustryPulse(subjectForPulse),
   ]);
+
+  // Fall back to CS if subject is set but has no pulse data yet
+  const pulse = rawPulse ?? (subjectForPulse !== 'Computer Science' ? await getIndustryPulse('Computer Science') : null);
+  const showAsDefault = isDefault || (!isDefault && !rawPulse && !!pulse);
 
   const statCards = [
     {
@@ -246,7 +275,12 @@ export default async function FacultyDashboardPage() {
       </div>
 
       {/* Industry Pulse */}
-      <IndustryPulsePanel pulse={pulse} subject={faculty.subject} />
+      <IndustryPulsePanel
+        pulse={pulse}
+        subject={faculty.subject || 'Computer Science'}
+        isDefault={showAsDefault}
+        isJudge={isJudge}
+      />
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
