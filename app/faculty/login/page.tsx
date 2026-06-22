@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { BookOpen, ChevronLeft, Award } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BookOpen, ChevronLeft, Award, CheckCircle2, Smartphone } from 'lucide-react';
 import AppLoader from '@/components/AppLoader';
 
 const DESIGNATIONS = [
@@ -14,6 +15,51 @@ const DESIGNATIONS = [
   'Other',
 ];
 
+function StepIndicator() {
+  return (
+    <div className="flex items-center gap-0 mb-6">
+      {/* Step 1 — completed */}
+      <div className="flex flex-col items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1.5 bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full">
+          <CheckCircle2 className="w-3.5 h-3.5 text-green-600" strokeWidth={2.5} />
+          Step 1
+        </div>
+        <span className="text-[10px] text-indigo-600 font-medium">Identity</span>
+      </div>
+
+      {/* Connecting line — half indigo, half gray */}
+      <div className="flex-1 flex mx-2 h-0.5 overflow-hidden rounded-full">
+        <div className="w-1/2 bg-indigo-400" />
+        <div className="w-1/2 bg-[#E3E8EE]" />
+      </div>
+
+      {/* Step 2 — current */}
+      <div className="flex flex-col items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1.5 bg-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+          <span className="w-2 h-2 rounded-full bg-white opacity-90" />
+          Step 2
+        </div>
+        <span className="text-[10px] text-indigo-600 font-medium">Institution</span>
+      </div>
+    </div>
+  );
+}
+
+function SuccessToast({ name }: { name: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      transition={{ duration: 0.25 }}
+      className="mb-4 px-4 py-2.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700 text-sm"
+    >
+      <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-green-500" strokeWidth={2} />
+      Phone verified — let&apos;s complete {name ? `${name.split(' ')[0]}'s` : 'your'} profile
+    </motion.div>
+  );
+}
+
 export default function FacultyLoginPage() {
   const router = useRouter();
   const [phone, setPhone] = useState('');
@@ -24,6 +70,13 @@ export default function FacultyLoginPage() {
   const [loading, setLoading] = useState(false);
   const [judgeLoading, setJudgeLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if (!showToast) return;
+    const id = setTimeout(() => setShowToast(false), 2000);
+    return () => clearTimeout(id);
+  }, [showToast]);
 
   async function handleContinue(e: React.FormEvent) {
     e.preventDefault();
@@ -51,6 +104,7 @@ export default function FacultyLoginPage() {
         await submitLogin();
       } else {
         setIsNewUser(true);
+        setShowToast(true);
       }
     } catch {
       setError('Network error. Please try again.');
@@ -119,6 +173,8 @@ export default function FacultyLoginPage() {
     }
   }
 
+  const firstName = name.trim().split(' ')[0] ?? '';
+
   const inputCls =
     'w-full border border-[#E3E8EE] focus:ring-2 focus:ring-[#635BFF] focus:border-[#635BFF] rounded-lg py-2.5 px-4 text-sm bg-white text-[#0A2540] placeholder-[#8898AA] outline-none transition-all';
 
@@ -138,9 +194,17 @@ export default function FacultyLoginPage() {
           <p className="text-[#425466] text-sm mt-1">Faculty Portal</p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E3E8EE] shadow-sm p-8">
+        <AnimatePresence mode="wait">
           {!isNewUser ? (
-            <>
+            /* ── Step 1 ── */
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.22 }}
+              className="bg-white rounded-2xl border border-[#E3E8EE] shadow-sm p-8"
+            >
               <h2 className="text-lg font-bold tracking-tight text-[#0A2540] mb-1">Sign in</h2>
               <p className="text-[#8898AA] text-xs mb-6">New here? We&apos;ll create your account automatically.</p>
 
@@ -181,19 +245,43 @@ export default function FacultyLoginPage() {
                   {loading ? 'Checking...' : 'Continue'}
                 </button>
               </form>
-            </>
+            </motion.div>
           ) : (
-            <>
+            /* ── Step 2 ── */
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.22 }}
+              className="bg-[#FAFAFF] rounded-2xl border border-indigo-100 shadow-sm p-8"
+            >
+              <StepIndicator />
+
+              <AnimatePresence>
+                {showToast && <SuccessToast name={name} />}
+              </AnimatePresence>
+
+              {/* Heading */}
               <div className="flex items-center gap-2 mb-1">
                 <button
-                  onClick={() => { setIsNewUser(false); setError(''); }}
-                  className="text-[#425466] hover:text-[#0A2540] transition-colors"
+                  onClick={() => { setIsNewUser(false); setError(''); setShowToast(false); }}
+                  className="text-[#425466] hover:text-[#0A2540] transition-colors flex-shrink-0"
                 >
                   <ChevronLeft className="w-4 h-4" strokeWidth={2} />
                 </button>
-                <h2 className="text-lg font-bold tracking-tight text-[#0A2540]">Create Account</h2>
+                <h2 className="text-lg font-bold tracking-tight text-[#0A2540]">
+                  Almost there{firstName ? `, ${firstName}` : ''}
+                </h2>
               </div>
-              <p className="text-[#8898AA] text-xs mb-6 ml-6">A few more details to get started</p>
+              <p className="text-[#8898AA] text-xs mb-4 ml-6">Just 2 more details and you&apos;re in</p>
+
+              {/* Phone indicator */}
+              <div className="flex items-center gap-2 mb-5 ml-6">
+                <Smartphone className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" strokeWidth={1.5} />
+                <span className="text-xs text-slate-500">+91 {phone}</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" strokeWidth={2.5} />
+              </div>
 
               {error && (
                 <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-[#DF1B41] text-sm">
@@ -234,13 +322,12 @@ export default function FacultyLoginPage() {
                   {loading ? 'Creating account...' : 'Create Account'}
                 </button>
               </form>
-            </>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
         {/* Quick Judge Access */}
         <div className="mt-4">
-          {/* OR divider */}
           <div className="flex items-center gap-3 mb-4">
             <div className="flex-1 h-px bg-[#E3E8EE]" />
             <span className="text-xs text-[#8898AA] font-medium">OR</span>
